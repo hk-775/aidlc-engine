@@ -66,6 +66,8 @@ operational limitations, and clean-room provenance process.
 
 - Repository: `https://github.com/hk-775/aidlc-engine`
 - Project site: `https://hk-775.github.io/aidlc-engine/`
+- Architecture explorer: `https://hk-775.github.io/aidlc-engine/architecture.html`
+- Architecture explorer source: `site/architecture.html`
 - Full logo: `site/assets/aidlc-engine-logo.svg`
 - Icon: `site/assets/aidlc-engine-icon.svg`
 - Architecture image: `site/assets/architecture.png`
@@ -73,6 +75,7 @@ operational limitations, and clean-room provenance process.
 - Static-site architecture image: `site/assets/architecture.svg`
 - Static-site vector source: `site/assets/architecture.dot`
 - Static site: `site/`
+- Publication artifact inventory: `docs/PUBLICATION_ARTIFACTS.md`
 
 ## Required pre-publication edits
 

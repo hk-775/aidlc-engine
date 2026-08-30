@@ -18,6 +18,7 @@ project or organization identity.
       docs, notices, and workflows.
 - [ ] Replace or deliberately retain the logo and icon under the license.
 - [ ] Update SVG titles, descriptions, filenames, and accessible alt text.
+- [ ] Update architecture explorer copy, canonical URLs, and downloadable assets.
 - [ ] Update colors only after checking contrast and focus visibility.
 
 ## Product truthfulness
@@ -61,6 +62,8 @@ project or organization identity.
 - [ ] Run tests, coverage, scans, demo, and package inspection.
 - [ ] Run the full release checklist.
 - [ ] Review static-site links, content policy, accessibility, and metadata.
+- [ ] Review both the landing page and architecture explorer with scripts on
+      and off.
 - [ ] Keep Pages deployment manual, constrained to `main`, and protected by
       environment reviewers.
 - [ ] Remove local state, temporary output, coverage data, and archives.

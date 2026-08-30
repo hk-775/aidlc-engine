@@ -27,6 +27,10 @@ principles of Keep a Changelog, and versions use semantic versioning.
 - Editable draw.io architecture source and a README PNG that distinguish the
   implemented local engine from unconnected CI/CD, AWS deployment, and
   production systems.
+- Offline architecture explorer with interactive lifecycle, governance, and
+  persistence walkthroughs plus direct downloads of canonical diagram assets.
+- Maintained publication-artifact inventory covering customer-facing pages,
+  documentation, visual sources, and release inclusion.
 
 ### Security
 

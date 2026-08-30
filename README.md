@@ -14,7 +14,8 @@ implementation is designed for local evaluation on one POSIX host. It is not
 a production authorization service.
 
 [Project site](https://hk-775.github.io/aidlc-engine/) ·
-[Architecture](docs/ARCHITECTURE.md) ·
+[Architecture explorer](https://hk-775.github.io/aidlc-engine/architecture.html) ·
+[Architecture reference](docs/ARCHITECTURE.md) ·
 [Quickstart](QUICKSTART.md) ·
 [Security](SECURITY.md) ·
 [Changelog](CHANGELOG.md)
@@ -37,6 +38,14 @@ Editable source: [draw.io architecture diagram](site/assets/architecture.drawio)
 - Provides deterministic identifiers and timestamps when a provider is
   injected.
 - Includes a synthetic end-to-end demo and an offline static project site.
+
+## The three layers
+
+| Layer | Responsibility | Source |
+| --- | --- | --- |
+| Interface | Parse commands, construct asserted actors, and return stable JSON results | `aidlc_engine.cli` |
+| Governance engine | Validate policy and authority, apply lifecycle operations, and enforce human gates | `aidlc_engine.service`, `aidlc_engine.policy`, `aidlc_engine.models` |
+| Evidence store | Commit atomic state and exclusively created, hash-linked audit events | `aidlc_engine.persistence`, `aidlc_engine.audit` |
 
 ## Authority boundary
 
@@ -69,7 +78,7 @@ governance decision; it does not publish or deploy anything.
 - No runtime Python packages
 - Make is optional
 
-## Install with uv
+## See it in 60 seconds
 
 Clone the canonical repository and install the isolated command-line tool:
 
@@ -108,6 +117,8 @@ make site
 
 Then open the local address printed by Python. The site has no telemetry,
 cookies, remote fonts, content delivery networks, or network APIs.
+Open `/architecture.html` for the interactive architecture explorer and
+downloadable diagram sources.
 
 ## Command-line shape
 
@@ -203,6 +214,21 @@ The detailed readiness ledger is in
 Read [SECURITY.md](SECURITY.md), [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md),
 and [docs/RESPONSIBLE_USE.md](docs/RESPONSIBLE_USE.md) before using AI-DLC
 Engine in an evaluation that includes sensitive data.
+
+## Documentation
+
+- [Architecture explorer](https://hk-775.github.io/aidlc-engine/architecture.html)
+  — interactive lifecycle, governance, persistence, and trust boundaries.
+- [Architecture reference](docs/ARCHITECTURE.md) — components, transaction
+  sequence, safety properties, and scale characteristics.
+- [Features and flows](docs/FEATURES_AND_FLOWS.md) — implemented capability and
+  authority flows.
+- [Quickstart](QUICKSTART.md) and [startup guide](STARTUP.md) — evaluator paths
+  from installation through safety checks.
+- [Production readiness](docs/PRODUCTION_READINESS.md) — evidence, blockers, and
+  maturation sequence.
+- [Publication artifacts](docs/PUBLICATION_ARTIFACTS.md) — canonical customer
+  assets and release-inclusion requirements.
 
 ## Contributing
 

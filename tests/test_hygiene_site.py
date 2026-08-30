@@ -218,6 +218,26 @@ class RepositoryHygieneTests(WorkspaceTestCase):
         self.assertIn("uv pip install --require-hashes", contributing)
         self.assertNotIn("PYTHONPATH=src python3 -m aidlc_engine", quickstart)
 
+    def test_publication_inventory_covers_customer_facing_artifacts(self) -> None:
+        inventory = (ROOT / "docs" / "PUBLICATION_ARTIFACTS.md").read_text(
+            encoding="utf-8"
+        )
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        for path in (
+            "site/index.html",
+            "site/architecture.html",
+            "site/assets/architecture.drawio",
+            "site/assets/architecture.png",
+            "docs/ARCHITECTURE.md",
+            "docs/PRODUCTION_READINESS.md",
+            "launch-materials.md",
+        ):
+            with self.subTest(path=path):
+                self.assertIn(path, inventory)
+        self.assertIn("Architecture explorer", readme)
+        self.assertIn("See it in 60 seconds", readme)
+        self.assertIn("The three layers", readme)
+
     def test_pages_deployment_is_manual_main_only_and_permission_scoped(self) -> None:
         text = (ROOT / ".github" / "workflows" / "pages.yml").read_text(
             encoding="utf-8"
@@ -235,9 +255,17 @@ class RepositoryHygieneTests(WorkspaceTestCase):
 class StaticSiteTests(WorkspaceTestCase):
     def setUp(self) -> None:
         super().setUp()
-        self.index_text = (ROOT / "site" / "index.html").read_text(encoding="utf-8")
-        self.parser = SiteParser()
-        self.parser.feed(self.index_text)
+        self.page_text: dict[str, str] = {}
+        self.page_parsers: dict[str, SiteParser] = {}
+        for name in ("index.html", "architecture.html"):
+            text = (ROOT / "site" / name).read_text(encoding="utf-8")
+            parser = SiteParser()
+            parser.feed(text)
+            self.page_text[name] = text
+            self.page_parsers[name] = parser
+        self.index_text = self.page_text["index.html"]
+        self.architecture_text = self.page_text["architecture.html"]
+        self.parser = self.page_parsers["index.html"]
 
     def test_page_has_language_landmarks_and_heading(self) -> None:
         html_attrs = next(attrs for tag, attrs in self.parser.tags if tag == "html")
@@ -258,35 +286,41 @@ class StaticSiteTests(WorkspaceTestCase):
         self.assertEqual(main.get("id"), "main")
 
     def test_every_image_has_nonempty_alt_text(self) -> None:
-        images = [attrs for tag, attrs in self.parser.tags if tag == "img"]
-        self.assertGreaterEqual(len(images), 2)
-        self.assertTrue(all(attrs.get("alt") for attrs in images))
+        for page_name, parser in self.page_parsers.items():
+            with self.subTest(page=page_name):
+                images = [attrs for tag, attrs in parser.tags if tag == "img"]
+                self.assertGreaterEqual(len(images), 1)
+                self.assertTrue(all(attrs.get("alt") for attrs in images))
 
     def test_content_policy_disables_network_connections(self) -> None:
-        metas = [attrs for tag, attrs in self.parser.tags if tag == "meta"]
-        policy = next(
-            attrs["content"]
-            for attrs in metas
-            if attrs.get("http-equiv") == "Content-Security-Policy"
-        )
-        self.assertIn("connect-src 'none'", policy)
-        self.assertIn("object-src 'none'", policy)
+        for page_name, parser in self.page_parsers.items():
+            with self.subTest(page=page_name):
+                metas = [attrs for tag, attrs in parser.tags if tag == "meta"]
+                policy = next(
+                    attrs["content"]
+                    for attrs in metas
+                    if attrs.get("http-equiv") == "Content-Security-Policy"
+                )
+                self.assertIn("connect-src 'none'", policy)
+                self.assertIn("object-src 'none'", policy)
 
     def test_all_referenced_site_assets_exist(self) -> None:
-        referenced = []
-        for tag, attrs in self.parser.tags:
-            if tag in {"img", "script"} and attrs.get("src"):
-                referenced.append(attrs["src"])
-            relations = set((attrs.get("rel") or "").split())
-            if (
-                tag == "link"
-                and relations & {"icon", "manifest", "modulepreload", "preload", "stylesheet"}
-                and attrs.get("href")
-            ):
-                referenced.append(attrs["href"])
-        for reference in referenced:
-            with self.subTest(reference=reference):
-                self.assertTrue((ROOT / "site" / str(reference)).is_file())
+        for page_name, parser in self.page_parsers.items():
+            referenced = []
+            for tag, attrs in parser.tags:
+                if tag in {"img", "script"} and attrs.get("src"):
+                    referenced.append(attrs["src"])
+                relations = set((attrs.get("rel") or "").split())
+                if (
+                    tag == "link"
+                    and relations
+                    & {"icon", "manifest", "modulepreload", "preload", "stylesheet"}
+                    and attrs.get("href")
+                ):
+                    referenced.append(attrs["href"])
+            for reference in referenced:
+                with self.subTest(page=page_name, reference=reference):
+                    self.assertTrue((ROOT / "site" / str(reference)).is_file())
 
     def test_canonical_and_repository_links_are_configured(self) -> None:
         links = [attrs for tag, attrs in self.parser.tags if tag == "link"]
@@ -294,6 +328,20 @@ class StaticSiteTests(WorkspaceTestCase):
             attrs for attrs in links if "canonical" in (attrs.get("rel") or "").split()
         )
         self.assertEqual(canonical.get("href"), "https://hk-775.github.io/aidlc-engine/")
+        architecture_links = [
+            attrs
+            for tag, attrs in self.page_parsers["architecture.html"].tags
+            if tag == "link"
+        ]
+        architecture_canonical = next(
+            attrs
+            for attrs in architecture_links
+            if "canonical" in (attrs.get("rel") or "").split()
+        )
+        self.assertEqual(
+            architecture_canonical.get("href"),
+            "https://hk-775.github.io/aidlc-engine/architecture.html",
+        )
         anchors = [attrs for tag, attrs in self.parser.tags if tag == "a"]
         self.assertTrue(
             any(
@@ -303,10 +351,30 @@ class StaticSiteTests(WorkspaceTestCase):
         )
 
     def test_javascript_uses_safe_text_rendering(self) -> None:
-        script = (ROOT / "site" / "app.js").read_text(encoding="utf-8")
-        self.assertNotIn("innerHTML", script)
-        self.assertIn("textContent", script)
-        self.assertNotIn("fetch(", script)
+        for name in ("app.js", "architecture.js"):
+            with self.subTest(name=name):
+                script = (ROOT / "site" / name).read_text(encoding="utf-8")
+                self.assertNotIn("innerHTML", script)
+                self.assertIn("textContent", script)
+                self.assertNotIn("fetch(", script)
+
+    def test_architecture_explorer_has_interactive_and_downloadable_artifacts(
+        self,
+    ) -> None:
+        self.assertIn("Interactive architecture", self.architecture_text)
+        self.assertIn('id="architecture-steps"', self.architecture_text)
+        self.assertIn("assets/architecture.drawio", self.architecture_text)
+        self.assertIn("assets/architecture.png", self.architecture_text)
+        self.assertIn("assets/architecture.svg", self.architecture_text)
+        self.assertIn("assets/architecture.dot", self.architecture_text)
+        script = (ROOT / "site" / "architecture.js").read_text(encoding="utf-8")
+        for marker in (
+            'lifecycle: Object.freeze({',
+            'governance: Object.freeze({',
+            'persistence: Object.freeze({',
+            "window.setInterval",
+        ):
+            self.assertIn(marker, script)
 
     def test_svg_assets_are_well_formed_and_described(self) -> None:
         for name in ("aidlc-engine-logo.svg", "aidlc-engine-icon.svg", "architecture.svg"):

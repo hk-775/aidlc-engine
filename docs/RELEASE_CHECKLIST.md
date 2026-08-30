@@ -60,6 +60,8 @@ production ready.
 - [ ] White-label checklist is complete.
 - [ ] Repository URLs, owners, and reporting contacts are configured.
 - [ ] Logo and icon render at intended sizes.
+- [ ] Landing page and architecture explorer match the current implementation.
+- [ ] Architecture downloads open from the published Pages artifact.
 - [ ] Launch copy avoids unsupported claims.
 - [ ] Pages deployment is manually started from `main`.
 - [ ] The `github-pages` environment has required reviewers before launch.
