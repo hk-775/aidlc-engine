@@ -367,6 +367,12 @@ class StaticSiteTests(WorkspaceTestCase):
         self.assertIn("assets/architecture.png", self.architecture_text)
         self.assertIn("assets/architecture.svg", self.architecture_text)
         self.assertIn("assets/architecture.dot", self.architecture_text)
+        self.assertIn(
+            "assets/aws-reference-architecture.drawio", self.architecture_text
+        )
+        self.assertIn(
+            "assets/aws-reference-architecture.png", self.architecture_text
+        )
         script = (ROOT / "site" / "architecture.js").read_text(encoding="utf-8")
         for marker in (
             'lifecycle: Object.freeze({',
@@ -418,6 +424,31 @@ class StaticSiteTests(WorkspaceTestCase):
             "site/assets/architecture.drawio",
             readme,
         )
+
+        aws_drawio_root = ET.parse(
+            ROOT / "site" / "assets" / "aws-reference-architecture.drawio"
+        ).getroot()
+        aws_drawio_values = " ".join(
+            element.attrib.get("value", "") for element in aws_drawio_root.iter()
+        )
+        aws_png = (
+            ROOT / "site" / "assets" / "aws-reference-architecture.png"
+        ).read_bytes()
+        self.assertEqual(aws_drawio_root.tag, "mxfile")
+        for marker in (
+            "AWS reference deployment",
+            "API Gateway",
+            "DynamoDB",
+            "AWS KMS",
+            "NO EXECUTION PATH",
+        ):
+            self.assertIn(marker, aws_drawio_values)
+        self.assertEqual(aws_png[:8], b"\x89PNG\r\n\x1a\n")
+        self.assertEqual(aws_png[12:16], b"IHDR")
+        self.assertGreaterEqual(int.from_bytes(aws_png[16:20], "big"), 1600)
+        self.assertGreaterEqual(int.from_bytes(aws_png[20:24], "big"), 900)
+        self.assertIn("site/assets/aws-reference-architecture.png", readme)
+        self.assertIn("site/assets/aws-reference-architecture.drawio", readme)
 
     def test_static_demo_counts_match_executable_demo(self) -> None:
         script = (ROOT / "site" / "app.js").read_text(encoding="utf-8")

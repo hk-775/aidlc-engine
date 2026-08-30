@@ -34,6 +34,9 @@ The architecture has several representations for different consumers:
 - `site/assets/architecture.svg` is the accessible vector used on the landing
   page.
 - `site/assets/architecture.dot` is the compact logical graph source.
+- `site/assets/aws-reference-architecture.drawio` is the editable proposed AWS
+  deployment.
+- `site/assets/aws-reference-architecture.png` is its presentation render.
 
 The canonical visual identity files are:
 
@@ -49,7 +52,7 @@ The source distribution must contain:
 
 - the landing page and architecture explorer;
 - both site JavaScript files and the shared stylesheet;
-- the editable draw.io source and PNG render;
+- both editable draw.io sources and both PNG renders;
 - this publication inventory and the long-form architecture reference; and
 - the release verification tooling.
 

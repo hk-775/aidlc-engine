@@ -1,0 +1,184 @@
+<mxfile host="app.diagrams.net" modified="2026-08-30T00:00:00.000Z" agent="Codex" version="29.7.9" type="device">
+  <diagram id="aidlc-aws-reference" name="AWS Reference Architecture">
+    <mxGraphModel dx="1900" dy="1180" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1180" math="0" shadow="0" adaptiveColors="auto" background="#FFFFFF">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="AI-DLC Engine — AWS reference deployment" style="text;html=1;align=center;verticalAlign=middle;fontSize=26;fontStyle=1;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="230" y="20" width="1380" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="Proposed authenticated service prototype for human-governed lifecycle state, durable evidence, and externally anchored audit integrity" style="text;html=1;align=center;verticalAlign=middle;fontSize=14;fontColor=#545B64;" vertex="1" parent="1">
+          <mxGeometry x="230" y="62" width="1380" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="human" value="&lt;b&gt;Human decision makers&lt;/b&gt;&lt;br&gt;owners · approvers · reviewers · risk owners" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EAF7EA;strokeColor=#3F8624;strokeWidth=2;fontColor=#232F3E;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="180" width="180" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="agent" value="&lt;b&gt;Agent and CI workloads&lt;/b&gt;&lt;br&gt;bounded work · evidence submission · transition proposals" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F4F8;strokeColor=#147EBA;strokeWidth=2;fontColor=#232F3E;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="340" width="180" height="105" as="geometry"/>
+        </mxCell>
+        <mxCell id="github" value="&lt;b&gt;GitHub Actions&lt;/b&gt;&lt;br&gt;reviewed release workflow for the AI-DLC Engine service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;strokeWidth=2;fontColor=#232F3E;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="790" width="180" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="aws_region" value="AWS account / Region" style="swimlane;startSize=36;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;fillColor=#FFF9E6;strokeColor=#FF9900;strokeWidth=2;fontColor=#232F3E;fontStyle=1;fontSize=16;html=1;" vertex="1" parent="1">
+          <mxGeometry x="230" y="100" width="1380" height="890" as="geometry"/>
+        </mxCell>
+        <mxCell id="access_plane" value="Edge, identity, and authenticated access" style="swimlane;startSize=30;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;fillColor=#F3F4F6;strokeColor=#879196;fontColor=#232F3E;fontStyle=1;fontSize=14;html=1;" vertex="1" parent="aws_region">
+          <mxGeometry x="20" y="55" width="1340" height="225" as="geometry"/>
+        </mxCell>
+        <mxCell id="waf" value="AWS WAF&lt;br&gt;edge filtering" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=#ffffff;fillColor=#232F3E;dashed=0;verticalLabelPosition=middle;verticalAlign=bottom;align=center;html=1;whiteSpace=wrap;fontSize=10;fontStyle=1;spacing=3;shape=mxgraph.aws4.productIcon;prIcon=mxgraph.aws4.waf;" vertex="1" parent="access_plane">
+          <mxGeometry x="35" y="52" width="80" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="cloudfront" value="CloudFront&lt;br&gt;review portal" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#8C4FFF;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudfront;" vertex="1" parent="access_plane">
+          <mxGeometry x="180" y="55" width="78" height="78" as="geometry"/>
+        </mxCell>
+        <mxCell id="portal_s3" value="Amazon S3&lt;br&gt;static portal" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.s3;fillColor=#E05243;gradientColor=none;fontColor=#232F3E;fontSize=11;" vertex="1" parent="access_plane">
+          <mxGeometry x="325" y="50" width="77" height="93" as="geometry"/>
+        </mxCell>
+        <mxCell id="cognito" value="Amazon Cognito&lt;br&gt;human identity" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cognito;" vertex="1" parent="access_plane">
+          <mxGeometry x="475" y="55" width="78" height="78" as="geometry"/>
+        </mxCell>
+        <mxCell id="workload_iam" value="IAM workload role&lt;br&gt;OIDC / SigV4" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.iam;fillColor=#759C3E;gradientColor=none;fontColor=#232F3E;fontSize=11;" vertex="1" parent="access_plane">
+          <mxGeometry x="625" y="53" width="55" height="82" as="geometry"/>
+        </mxCell>
+        <mxCell id="api_gateway" value="API Gateway&lt;br&gt;JWT + IAM routes" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.api_gateway;" vertex="1" parent="access_plane">
+          <mxGeometry x="760" y="55" width="78" height="78" as="geometry"/>
+        </mxCell>
+        <mxCell id="access_note" value="&lt;b&gt;Identity binding&lt;/b&gt;&lt;br&gt;Human roles are mapped from verified identity and protected administration. Workloads use scoped roles. Every accepted command records the authenticated principal, request identifier, and policy version." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#879196;fontColor=#545B64;fontSize=11;" vertex="1" parent="access_plane">
+          <mxGeometry x="890" y="48" width="410" height="115" as="geometry"/>
+        </mxCell>
+        <mxCell id="governance_plane" value="Serverless governance service" style="swimlane;startSize=30;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;fillColor=#E8F4F8;strokeColor=#147EBA;fontColor=#232F3E;fontStyle=1;fontSize=14;html=1;" vertex="1" parent="aws_region">
+          <mxGeometry x="20" y="310" width="790" height="420" as="geometry"/>
+        </mxCell>
+        <mxCell id="api_lambda" value="AWS Lambda&lt;br&gt;request / query adapter" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.lambda_function;fillColor=#F58534;gradientColor=none;fontColor=#232F3E;fontSize=11;" vertex="1" parent="governance_plane">
+          <mxGeometry x="560" y="52" width="69" height="72" as="geometry"/>
+        </mxCell>
+        <mxCell id="mutation_queue" value="Amazon SQS FIFO&lt;br&gt;per-project ordering" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.sqs;" vertex="1" parent="governance_plane">
+          <mxGeometry x="390" y="50" width="78" height="78" as="geometry"/>
+        </mxCell>
+        <mxCell id="mutation_lambda" value="AWS Lambda&lt;br&gt;serialized mutation worker" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.lambda_function;fillColor=#F58534;gradientColor=none;fontColor=#232F3E;fontSize=11;" vertex="1" parent="governance_plane">
+          <mxGeometry x="220" y="52" width="69" height="72" as="geometry"/>
+        </mxCell>
+        <mxCell id="eventbridge" value="EventBridge + SNS&lt;br&gt;approval notifications" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.eventbridge;" vertex="1" parent="governance_plane">
+          <mxGeometry x="55" y="50" width="78" height="78" as="geometry"/>
+        </mxCell>
+        <mxCell id="engine_core" value="&lt;b&gt;AI-DLC Engine service core&lt;/b&gt;&lt;br&gt;policy + authority validation · lifecycle state machine · bounded assignments · evidence checks · independent human gates · canonical audit-event construction" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#147EBA;strokeWidth=2;fontColor=#232F3E;fontSize=13;" vertex="1" parent="governance_plane">
+          <mxGeometry x="70" y="190" width="650" height="105" as="geometry"/>
+        </mxCell>
+        <mxCell id="governance_note" value="Mutations are queued by project and committed with conditional transactions. Queries do not bypass integrity verification or authorization." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3F8FC;strokeColor=#6C8EBF;fontColor=#545B64;fontSize=11;" vertex="1" parent="governance_plane">
+          <mxGeometry x="70" y="330" width="650" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="data_plane" value="Durable governance state, evidence, and audit anchor" style="swimlane;startSize=30;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;fillColor=#EAF7EA;strokeColor=#3F8624;fontColor=#232F3E;fontStyle=1;fontSize=14;html=1;" vertex="1" parent="aws_region">
+          <mxGeometry x="840" y="310" width="500" height="420" as="geometry"/>
+        </mxCell>
+        <mxCell id="dynamodb" value="DynamoDB&lt;br&gt;state + append-only events" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,0.25,0],[1,0.5,0],[1,0.75,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,1],[0.75,1],[0.5,1],[0.25,1]];outlineConnect=0;fontColor=#232F3E;fillColor=#C925D1;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.dynamodb;" vertex="1" parent="data_plane">
+          <mxGeometry x="45" y="275" width="78" height="78" as="geometry"/>
+        </mxCell>
+        <mxCell id="audit_s3" value="Amazon S3&lt;br&gt;Object Lock checkpoints" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.s3;fillColor=#E05243;gradientColor=none;fontColor=#232F3E;fontSize=11;" vertex="1" parent="data_plane">
+          <mxGeometry x="205" y="270" width="77" height="93" as="geometry"/>
+        </mxCell>
+        <mxCell id="kms" value="AWS KMS&lt;br&gt;signing + encryption" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#DD344C;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.key_management_service;" vertex="1" parent="data_plane">
+          <mxGeometry x="365" y="275" width="78" height="78" as="geometry"/>
+        </mxCell>
+        <mxCell id="data_note" value="&lt;b&gt;Target durability model&lt;/b&gt;&lt;br&gt;• conditional state + event transaction&lt;br&gt;• immutable event keys and full-chain verification&lt;br&gt;• KMS-signed audit-head checkpoints&lt;br&gt;• S3 Object Lock retention outside the mutation path&lt;br&gt;• point-in-time recovery and tested restore procedures" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3F8624;fontColor=#545B64;fontSize=11;align=left;spacingLeft=12;" vertex="1" parent="data_plane">
+          <mxGeometry x="35" y="50" width="430" height="155" as="geometry"/>
+        </mxCell>
+        <mxCell id="supply_plane" value="Reviewed service supply chain" style="swimlane;startSize=28;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;fillColor=#F3F4F6;strokeColor=#879196;fontColor=#232F3E;fontStyle=1;fontSize=13;html=1;" vertex="1" parent="aws_region">
+          <mxGeometry x="20" y="760" width="620" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="deploy_iam" value="IAM OIDC role" style="outlineConnect=0;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;shape=mxgraph.aws3.iam;fillColor=#759C3E;gradientColor=none;fontColor=#232F3E;fontSize=10;" vertex="1" parent="supply_plane">
+          <mxGeometry x="45" y="34" width="45" height="67" as="geometry"/>
+        </mxCell>
+        <mxCell id="ecr" value="Amazon ECR&lt;br&gt;signed service image" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#ED7100;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecr;" vertex="1" parent="supply_plane">
+          <mxGeometry x="170" y="33" width="58" height="58" as="geometry"/>
+        </mxCell>
+        <mxCell id="supply_note" value="Pinned dependencies, source/history scans, reviewed infrastructure as code, image provenance, and manual production promotion." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#879196;fontColor=#545B64;fontSize=10;" vertex="1" parent="supply_plane">
+          <mxGeometry x="290" y="38" width="300" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="operations_plane" value="Operations and independent audit" style="swimlane;startSize=28;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;fillColor=#F4ECFF;strokeColor=#8C4FFF;fontColor=#232F3E;fontStyle=1;fontSize=13;html=1;" vertex="1" parent="aws_region">
+          <mxGeometry x="670" y="760" width="670" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="cloudwatch" value="CloudWatch + X-Ray&lt;br&gt;logs · metrics · traces · alarms" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudwatch_2;" vertex="1" parent="operations_plane">
+          <mxGeometry x="40" y="33" width="58" height="58" as="geometry"/>
+        </mxCell>
+        <mxCell id="cloudtrail" value="CloudTrail&lt;br&gt;control-plane audit" style="sketch=0;points=[[0,0,0],[0.25,0,0],[0.5,0,0],[0.75,0,0],[1,0,0],[0,1,0],[0.25,1,0],[0.5,1,0],[0.75,1,0],[1,1,0],[0,0.25,0],[0,0.5,0],[0,0.75,0],[1,0.25,0],[1,0.5,0],[1,0.75,0]];outlineConnect=0;fontColor=#232F3E;fillColor=#E7157B;strokeColor=#ffffff;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudtrail;" vertex="1" parent="operations_plane">
+          <mxGeometry x="210" y="33" width="58" height="58" as="geometry"/>
+        </mxCell>
+        <mxCell id="operations_note" value="Redacted application telemetry, integrity alarms, authorization-denial metrics, on-call ownership, incident retention, and restore drills." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#8C4FFF;fontColor=#545B64;fontSize=10;" vertex="1" parent="operations_plane">
+          <mxGeometry x="340" y="38" width="300" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="delivery_boundary" value="Customer delivery boundary — deliberately disconnected" style="swimlane;startSize=48;container=1;pointerEvents=0;collapsible=0;recursiveResize=0;fillColor=#FFFFFF;strokeColor=#4F627D;strokeWidth=2;dashed=1;fontColor=#10203D;fontStyle=1;fontSize=14;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="255" width="230" height="470" as="geometry"/>
+        </mxCell>
+        <mxCell id="source_control" value="Source control + pull requests" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#9AA6B2;fontColor=#334E68;fontSize=11;" vertex="1" parent="delivery_boundary">
+          <mxGeometry x="25" y="78" width="180" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="customer_cicd" value="Customer CI/CD + AWS deployment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9E6;strokeColor=#FF9900;strokeWidth=2;fontColor=#334E68;fontSize=11;" vertex="1" parent="delivery_boundary">
+          <mxGeometry x="25" y="175" width="180" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="production" value="Production systems" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#9AA6B2;fontColor=#334E68;fontSize=11;" vertex="1" parent="delivery_boundary">
+          <mxGeometry x="25" y="280" width="180" height="65" as="geometry"/>
+        </mxCell>
+        <mxCell id="delivery_note" value="&lt;b&gt;NO EXECUTION PATH&lt;/b&gt;&lt;br&gt;Agents and the governance service cannot merge, deploy, release, or accept risk." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE8E6;strokeColor=#B42318;strokeWidth=2;fontColor=#B42318;fontSize=11;" vertex="1" parent="delivery_boundary">
+          <mxGeometry x="20" y="380" width="190" height="72" as="geometry"/>
+        </mxCell>
+        <mxCell id="reference_note" value="REFERENCE ARCHITECTURE — the current alpha provisions none of these AWS resources. This path requires a remote API and persistence adapter, authenticated role administration, reviewed IaC, migration and restore tooling, fault testing, and an independent security assessment." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;strokeColor=#D6B656;strokeWidth=2;fontColor=#7A5C00;fontStyle=1;fontSize=12;align=center;" vertex="1" parent="1">
+          <mxGeometry x="300" y="1025" width="1300" height="68" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend" value="Blue: authenticated command path&amp;nbsp;&amp;nbsp;&amp;nbsp; Green: durable governance evidence&amp;nbsp;&amp;nbsp;&amp;nbsp; Purple: telemetry and audit&amp;nbsp;&amp;nbsp;&amp;nbsp; Red: prohibited delivery execution" style="text;html=1;align=center;verticalAlign=middle;fontSize=12;fontColor=#545B64;" vertex="1" parent="1">
+          <mxGeometry x="300" y="1110" width="1300" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_human_waf" value="HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#147EBA;strokeWidth=2;endArrow=classic;" edge="1" source="human" target="waf" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_waf_cloudfront" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#147EBA;strokeWidth=2;endArrow=classic;" edge="1" source="waf" target="cloudfront" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_cloudfront_portal" value="static UI" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#147EBA;strokeWidth=2;endArrow=classic;" edge="1" source="cloudfront" target="portal_s3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_human_cognito" value="browser sign-in" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#147EBA;strokeWidth=2;endArrow=classic;" edge="1" source="portal_s3" target="cognito" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_cognito_api" value="JWT" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#147EBA;strokeWidth=2;endArrow=classic;" edge="1" source="cognito" target="api_gateway" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_agent_iam" value="OIDC / SigV4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#147EBA;strokeWidth=2;endArrow=classic;" edge="1" source="agent" target="workload_iam" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_iam_api" value="scoped identity" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#147EBA;strokeWidth=2;endArrow=classic;" edge="1" source="workload_iam" target="api_gateway" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_api_adapter" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#147EBA;strokeWidth=2;endArrow=classic;" edge="1" source="api_gateway" target="api_lambda" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_adapter_queue" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#147EBA;strokeWidth=2;endArrow=classic;" edge="1" source="api_lambda" target="mutation_queue" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_queue_worker" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#147EBA;strokeWidth=2;endArrow=classic;" edge="1" source="mutation_queue" target="mutation_lambda" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_worker_core" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#147EBA;strokeWidth=2;endArrow=classic;" edge="1" source="mutation_lambda" target="engine_core" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_core_state" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3F8624;strokeWidth=2;endArrow=classic;" edge="1" source="engine_core" target="dynamodb" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_core_anchor" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3F8624;strokeWidth=2;endArrow=classic;" edge="1" source="engine_core" target="audit_s3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_core_kms" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3F8624;strokeWidth=2;endArrow=classic;" edge="1" source="engine_core" target="kms" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_core_events" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#E7157B;strokeWidth=2;endArrow=classic;" edge="1" source="engine_core" target="eventbridge" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_github_deploy_iam" value="OIDC" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#147EBA;strokeWidth=2;endArrow=classic;" edge="1" source="github" target="deploy_iam" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_deploy_iam_ecr" value="push" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#147EBA;strokeWidth=2;endArrow=classic;" edge="1" source="deploy_iam" target="ecr" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -72,6 +72,9 @@ operational limitations, and clean-room provenance process.
 - Icon: `site/assets/aidlc-engine-icon.svg`
 - Architecture image: `site/assets/architecture.png`
 - Editable architecture source: `site/assets/architecture.drawio`
+- AWS reference architecture: `site/assets/aws-reference-architecture.png`
+- Editable AWS reference source:
+  `site/assets/aws-reference-architecture.drawio`
 - Static-site architecture image: `site/assets/architecture.svg`
 - Static-site vector source: `site/assets/architecture.dot`
 - Static site: `site/`
