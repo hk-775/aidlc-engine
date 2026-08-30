@@ -24,6 +24,19 @@ a production authorization service.
 
 Editable source: [draw.io architecture diagram](site/assets/architecture.drawio)
 
+### AWS reference deployment
+
+![AI-DLC Engine proposed AWS reference deployment](site/assets/aws-reference-architecture.png)
+
+Editable source:
+[AWS reference draw.io diagram](site/assets/aws-reference-architecture.drawio).
+
+This is a proposed authenticated service architecture using AWS WAF,
+CloudFront, S3, Cognito, IAM, API Gateway, Lambda, SQS, DynamoDB, KMS,
+EventBridge, SNS, ECR, CloudWatch, X-Ray, and CloudTrail. The current alpha
+does not provision these resources or implement the required remote API,
+distributed persistence, identity administration, or operational controls.
+
 ## What it does
 
 - Implements a fixed lifecycle: discovery, requirements, design,

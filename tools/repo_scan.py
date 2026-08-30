@@ -116,6 +116,8 @@ REQUIRED_FILES = {
     "site/assets/architecture.drawio",
     "site/assets/architecture.png",
     "site/assets/architecture.svg",
+    "site/assets/aws-reference-architecture.drawio",
+    "site/assets/aws-reference-architecture.png",
     "site/index.html",
     "site/styles.css",
     "tools/history_scan.py",

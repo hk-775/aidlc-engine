@@ -174,6 +174,29 @@
         </div>
       </section>
 
+      <section class="section shell" aria-labelledby="aws-reference-heading">
+        <p class="eyebrow">AWS reference deployment</p>
+        <h2 id="aws-reference-heading">Proposed authenticated service architecture</h2>
+        <p class="section-copy">
+          This future-state view maps the production-readiness gaps to AWS
+          services while preserving the rule that governance records decisions
+          but cannot execute customer merges, deployments, or releases.
+        </p>
+        <figure>
+          <img
+            class="architecture"
+            src="assets/aws-reference-architecture.png"
+            width="1930"
+            height="1120"
+            alt="Proposed AI-DLC Engine AWS reference deployment showing identity, serverless governance, durable state, audit anchoring, observability, and a disconnected customer delivery boundary"
+          >
+          <figcaption>
+            Reference architecture only. The current alpha provisions none of
+            these AWS resources and has no remote service interface.
+          </figcaption>
+        </figure>
+      </section>
+
       <section class="section shell" aria-labelledby="components-heading">
         <p class="eyebrow">Component map</p>
         <h2 id="components-heading">Three layers with one authority boundary</h2>
@@ -251,6 +274,14 @@
           <a href="assets/architecture.dot" download>
             <strong>Graphviz source</strong>
             <span>Compact logical component map</span>
+          </a>
+          <a href="assets/aws-reference-architecture.drawio" download>
+            <strong>AWS draw.io source</strong>
+            <span>Editable proposed deployment</span>
+          </a>
+          <a href="assets/aws-reference-architecture.png" download>
+            <strong>AWS reference PNG</strong>
+            <span>Presentation-ready AWS service view</span>
           </a>
         </div>
       </section>

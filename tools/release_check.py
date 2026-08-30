@@ -41,6 +41,8 @@ REQUIRED_SOURCE_SUFFIXES = {
     "/schemas/policy.schema.json",
     "/site/assets/architecture.drawio",
     "/site/assets/architecture.png",
+    "/site/assets/aws-reference-architecture.drawio",
+    "/site/assets/aws-reference-architecture.png",
     "/site/architecture.html",
     "/site/architecture.js",
     "/site/index.html",

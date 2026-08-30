@@ -22,6 +22,27 @@ Static-site vector source:
 Static-site SVG:
 [`../site/assets/architecture.svg`](../site/assets/architecture.svg)
 
+AWS reference draw.io source:
+[`../site/assets/aws-reference-architecture.drawio`](../site/assets/aws-reference-architecture.drawio)
+
+AWS reference PNG:
+[`../site/assets/aws-reference-architecture.png`](../site/assets/aws-reference-architecture.png)
+
+## AWS reference deployment
+
+![AI-DLC Engine proposed AWS reference deployment](../site/assets/aws-reference-architecture.png)
+
+The AWS view is a proposed authenticated service prototype, not deployed
+infrastructure. It maps the production-readiness sequence to AWS WAF,
+CloudFront, S3, Cognito, IAM, API Gateway, Lambda, SQS FIFO, DynamoDB, KMS,
+EventBridge, SNS, ECR, CloudWatch, X-Ray, and CloudTrail.
+
+It requires new remote API and persistence adapters, protected identity and
+role administration, signed audit checkpoints, reviewed infrastructure as
+code, backup and restore validation, fault testing, and independent security
+assessment. Customer source control, CI/CD, deployment, and production systems
+remain deliberately disconnected from governance execution.
+
 ## Components
 
 ### CLI
