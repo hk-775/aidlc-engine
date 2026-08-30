@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import contextlib
+import io
 import json
 import xml.etree.ElementTree as ET
 from html.parser import HTMLParser
@@ -9,6 +11,7 @@ from tests.support import ROOT, WorkspaceTestCase
 from tools.repo_scan import (
     REQUIRED_FILES,
     decoded_provenance_terms,
+    main as repo_scan_main,
     run_scans,
     scan_credentials,
     scan_denylist,
@@ -36,6 +39,22 @@ class RepositoryHygieneTests(WorkspaceTestCase):
         result = run_scans(ROOT)
         self.assertTrue(result["ok"], result["findings"])
         self.assertEqual(result["scan_count"], 8)
+
+    def test_repository_scan_cli_allows_empty_selection(self) -> None:
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            return_code = repo_scan_main([])
+        self.assertEqual(return_code, 0)
+        self.assertEqual(json.loads(output.getvalue())["scan_count"], 8)
+
+    def test_repository_scan_cli_rejects_unknown_selection(self) -> None:
+        error = io.StringIO()
+        with (
+            contextlib.redirect_stderr(error),
+            self.assertRaisesRegex(SystemExit, "2"),
+        ):
+            repo_scan_main(["not-a-scan"])
+        self.assertIn("unknown scan selection", error.getvalue())
 
     def test_provenance_denylist_detects_runtime_decoded_term(self) -> None:
         root = self.workspace / "denylist"

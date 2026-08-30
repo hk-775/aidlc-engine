@@ -93,7 +93,9 @@ def main() -> int:
                 "source_member_count": len(source_members),
                 "wheel_contents_ok": wheel_ok,
                 "source_contents_ok": source_ok,
-                "stderr_tail": completed.stderr.splitlines()[-8:],
+                "output_tail": (
+                    completed.stdout.splitlines() + completed.stderr.splitlines()
+                )[-12:],
             }
     finally:
         if egg_info.exists():

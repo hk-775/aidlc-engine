@@ -5,6 +5,13 @@ principles of Keep a Changelog, and versions use semantic versioning.
 
 ## [Unreleased]
 
+### Fixed
+
+- Keep repository scan selection compatible with Python 3.11.
+- Avoid configuring an unused pip cache in dependency-free CI jobs.
+- Install a pinned packaging toolchain before no-isolation package checks.
+- Include build output in failed package-check diagnostics.
+
 ### Planned
 
 - Gather evaluator feedback on policy ergonomics and audit exports.

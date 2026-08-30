@@ -468,11 +468,19 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "scans",
         nargs="*",
-        choices=tuple(SCANS),
+        metavar="SCAN",
         help="Optional subset; all scans run by default.",
     )
     parser.add_argument("--pretty", action="store_true")
     args = parser.parse_args(argv)
+    unknown_scans = sorted(set(args.scans) - set(SCANS))
+    if unknown_scans:
+        parser.error(
+            "unknown scan selection: "
+            + ", ".join(unknown_scans)
+            + "; choose from "
+            + ", ".join(SCANS)
+        )
     result = run_scans(ROOT, args.scans or None)
     json.dump(
         result,
