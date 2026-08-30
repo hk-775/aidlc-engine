@@ -43,9 +43,12 @@ EXCLUDED_PARTS = {
 TEXT_SUFFIXES = {
     ".css",
     ".dot",
+    ".drawio",
     ".html",
+    ".in",
     ".js",
     ".json",
+    ".lock",
     ".md",
     ".py",
     ".svg",
@@ -158,7 +161,8 @@ def source_files(root: Path = ROOT) -> Iterable[Path]:
 
 def text_files(root: Path = ROOT) -> Iterable[Path]:
     for path in source_files(root):
-        yield path
+        if not path.suffix or path.suffix.casefold() in TEXT_SUFFIXES:
+            yield path
 
 
 def _relative(path: Path, root: Path = ROOT) -> str:

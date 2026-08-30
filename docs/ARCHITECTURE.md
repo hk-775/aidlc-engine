@@ -7,9 +7,17 @@ human delivery decisions across the AI Development Lifecycle. The architecture
 favors inspectability and deterministic behavior over distribution,
 integration breadth, or throughput.
 
-Architecture source: [`../site/assets/architecture.dot`](../site/assets/architecture.dot)
+Editable draw.io source:
+[`../site/assets/architecture.drawio`](../site/assets/architecture.drawio)
 
-Rendered asset: [`../site/assets/architecture.svg`](../site/assets/architecture.svg)
+README PNG:
+[`../site/assets/architecture.png`](../site/assets/architecture.png)
+
+Static-site vector source:
+[`../site/assets/architecture.dot`](../site/assets/architecture.dot)
+
+Static-site SVG:
+[`../site/assets/architecture.svg`](../site/assets/architecture.svg)
 
 ## Components
 

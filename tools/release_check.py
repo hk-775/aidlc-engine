@@ -38,6 +38,8 @@ REQUIRED_SOURCE_SUFFIXES = {
     "/docs/RELEASE_PROCESS.md",
     "/requirements-build.lock",
     "/schemas/policy.schema.json",
+    "/site/assets/architecture.drawio",
+    "/site/assets/architecture.png",
     "/site/index.html",
     "/tests/test_lifecycle.py",
     "/tools/history_scan.py",
