@@ -5,12 +5,23 @@ Use this sequence to evaluate the repository from a clean local copy.
 ## Supported evaluation environment
 
 - POSIX host
+- `uv`
 - Python 3.11, 3.12, or 3.13
 - Writable repository directory
-- No network connection required
 
-The package has no runtime dependencies. Coverage and the Python build frontend
-are development tools; the core and tests use the standard library.
+The package has no runtime dependencies. The first `uv` installation may need
+network access for a Python interpreter or the pinned build backend; operation
+after installation is local. Coverage and the Python build frontend are
+development tools; the core and tests use the standard library.
+
+## Install the CLI
+
+From the repository root:
+
+```console
+uv tool install .
+aidlc-engine --help
+```
 
 ## Baseline validation
 
@@ -37,9 +48,9 @@ PYTHONPATH=src python3 tools/package_check.py
 ## Manual smoke test
 
 ```console
-PYTHONPATH=src python3 -m aidlc_engine --store .tmp/startup-demo demo
-PYTHONPATH=src python3 -m aidlc_engine --store .tmp/startup-demo verify-audit
-PYTHONPATH=src python3 -m aidlc_engine --store .tmp/startup-demo status
+aidlc-engine --store .tmp/startup-demo demo
+aidlc-engine --store .tmp/startup-demo verify-audit
+aidlc-engine --store .tmp/startup-demo status
 ```
 
 Confirm:
@@ -54,7 +65,7 @@ Confirm:
 ## Safety smoke test
 
 ```console
-PYTHONPATH=src python3 -m aidlc_engine \
+aidlc-engine \
   --store .tmp/startup-demo \
   guard-operation \
   --actor-id agent_builder \

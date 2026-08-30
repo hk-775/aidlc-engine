@@ -10,7 +10,7 @@ migration command.
 Validate a policy before use:
 
 ```console
-PYTHONPATH=src python3 -m aidlc_engine \
+aidlc-engine \
   validate-policy \
   --file examples/policy.strict.json
 ```

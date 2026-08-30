@@ -8,7 +8,7 @@ evaluation.
 ## Start a project
 
 ```console
-PYTHONPATH=src python3 -m aidlc_engine \
+aidlc-engine \
   --store .aidlc-engine-evaluation \
   init \
   --name "Evaluation project" \
@@ -27,11 +27,11 @@ ancestor directory user-owned and restrictive. Do not run as an administrator.
 Before and after a workflow session:
 
 ```console
-PYTHONPATH=src python3 -m aidlc_engine \
+aidlc-engine \
   --store .aidlc-engine-evaluation \
   verify-audit
 
-PYTHONPATH=src python3 -m aidlc_engine \
+aidlc-engine \
   --store .aidlc-engine-evaluation \
   status
 ```
@@ -106,7 +106,7 @@ This is not a production backup strategy and does not prevent rollback.
 Restore only into a new empty directory, then run:
 
 ```console
-PYTHONPATH=src python3 -m aidlc_engine \
+aidlc-engine \
   --store PATH_TO_RESTORED_COPY \
   verify-audit
 ```

@@ -1,21 +1,32 @@
 # AI-DLC Engine quickstart
 
-This guide runs AI-DLC Engine locally without installing runtime dependencies
-or contacting a network service.
+This guide installs AI-DLC Engine with `uv` and runs it locally without runtime
+dependencies.
 
 ## 1. Check the environment
 
 ```console
-python3 --version
+uv --version
 ```
 
-Python 3.11 or newer is required. The local persistence layer uses POSIX file
-locking.
+`uv` must have access to Python 3.11 or newer, either locally or through its
+managed Python support. The persistence layer uses POSIX file locking.
 
-## 2. Run the complete synthetic demo
+## 2. Install the command
+
+From the repository root:
 
 ```console
-PYTHONPATH=src python3 -m aidlc_engine --store .tmp/quickstart-demo demo
+uv tool install .
+```
+
+This creates an isolated tool environment and exposes the `aidlc-engine`
+command.
+
+## 3. Run the complete synthetic demo
+
+```console
+aidlc-engine --store .tmp/quickstart-demo demo
 ```
 
 Expected summary values:
@@ -28,18 +39,18 @@ Expected summary values:
 The `release` stage is a recorded governance outcome. No repository merge,
 deployment, publication, or production operation occurs.
 
-## 3. Verify and inspect the store
+## 4. Verify and inspect the store
 
 ```console
-PYTHONPATH=src python3 -m aidlc_engine \
+aidlc-engine \
   --store .tmp/quickstart-demo \
   verify-audit
 
-PYTHONPATH=src python3 -m aidlc_engine \
+aidlc-engine \
   --store .tmp/quickstart-demo \
   status
 
-PYTHONPATH=src python3 -m aidlc_engine \
+aidlc-engine \
   --store .tmp/quickstart-demo \
   events
 ```
@@ -47,10 +58,10 @@ PYTHONPATH=src python3 -m aidlc_engine \
 All commands emit JSON. Audit verification should report 32 events and a valid
 head hash.
 
-## 4. Observe a denied agent action
+## 5. Observe a denied agent action
 
 ```console
-PYTHONPATH=src python3 -m aidlc_engine \
+aidlc-engine \
   --store .tmp/quickstart-demo \
   guard-operation \
   --actor-id agent_builder \
@@ -61,10 +72,10 @@ PYTHONPATH=src python3 -m aidlc_engine \
 The command returns a nonzero status and a `forbidden_operation` error. Policy
 files cannot enable that operation for agents.
 
-## 5. Validate a stricter policy
+## 6. Validate a stricter policy
 
 ```console
-PYTHONPATH=src python3 -m aidlc_engine \
+aidlc-engine \
   validate-policy \
   --file examples/policy.strict.json
 ```
@@ -72,10 +83,10 @@ PYTHONPATH=src python3 -m aidlc_engine \
 The example adds artifacts and human role coverage while preserving hard
 safety controls.
 
-## 6. Initialize a separate project
+## 7. Initialize a separate project
 
 ```console
-PYTHONPATH=src python3 -m aidlc_engine \
+aidlc-engine \
   --store .tmp/manual-project \
   --id-seed manual-example \
   --fixed-time 2026-01-20T09:00:00Z \
@@ -89,11 +100,10 @@ PYTHONPATH=src python3 -m aidlc_engine \
 
 Continue with `propose-work`, `approve-work`, `add-artifact`,
 `complete-work`, `propose-transition`, and `approve-transition`. Use
-`python3 -m aidlc_engine <command> --help` for command-specific fields. Copy
-generated assignment, artifact, and proposal identifiers from each JSON
-result.
+`aidlc-engine <command> --help` for command-specific fields. Copy generated
+assignment, artifact, and proposal identifiers from each JSON result.
 
-## 7. Run repository checks
+## 8. Run repository checks
 
 ```console
 make test
@@ -105,7 +115,7 @@ make package-check
 Package archives are created only in ignored temporary storage and removed
 after inspection.
 
-## 8. View the offline project site
+## 9. View the offline project site
 
 ```console
 make site

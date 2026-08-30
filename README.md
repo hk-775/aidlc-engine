@@ -19,7 +19,9 @@ a production authorization service.
 [Security](SECURITY.md) ·
 [Changelog](CHANGELOG.md)
 
-![AI-DLC Engine architecture](site/assets/architecture.svg)
+![AI-DLC Engine current architecture and external AWS delivery boundary](site/assets/architecture.png)
+
+Editable source: [draw.io architecture diagram](site/assets/architecture.drawio)
 
 ## What it does
 
@@ -61,19 +63,34 @@ governance decision; it does not publish or deploy anything.
 
 ## Requirements
 
-- Python 3.11 or newer
+- `uv`
+- Python 3.11 or newer, installed locally or managed by `uv`
 - A POSIX operating system with advisory file locking
 - No runtime Python packages
 - Make is optional
 
-## Fast evaluation
+## Install with uv
 
-Clone the canonical repository, then run the complete local checks:
+Clone the canonical repository and install the isolated command-line tool:
 
 ```console
 git clone https://github.com/hk-775/aidlc-engine.git
 cd aidlc-engine
+uv tool install .
 ```
+
+Run the deterministic demonstration through the installed command:
+
+```console
+aidlc-engine --store .tmp/my-demo demo
+```
+
+The demo should report the `release` stage, 32 valid audit events, five
+artifacts, five assignments, and five transition proposals.
+
+## Fast evaluation
+
+Run the complete local checks from the cloned repository:
 
 ```console
 make test
@@ -82,17 +99,6 @@ make history-scan
 make demo
 make package-check
 ```
-
-Or run the demo directly:
-
-```console
-PYTHONPATH=src python3 -m aidlc_engine --store .tmp/my-demo demo
-```
-
-After package installation, use the equivalent `aidlc-engine` console command.
-
-The demo should report the `release` stage, 32 valid audit events, five
-artifacts, five assignments, and five transition proposals.
 
 To inspect the static site locally:
 
@@ -110,7 +116,7 @@ emit an object with `"ok": false`, a stable error code, a message, and details,
 then return a nonzero exit status.
 
 ```console
-PYTHONPATH=src python3 -m aidlc_engine \
+aidlc-engine \
   --store .aidlc-engine-example \
   --id-seed evaluation \
   --fixed-time 2026-01-15T12:00:00Z \
@@ -156,7 +162,7 @@ src/aidlc_engine/  lifecycle, policy, persistence, audit, CLI, and demo
 tests/             standard-library unit and integration tests
 schemas/           JSON Schema documents
 examples/          synthetic policy and evidence
-site/              offline static project site and SVG assets
+site/              offline static project site and visual assets
 tools/             quality, safety, demo, and package checks
 docs/              product, architecture, security, and operations material
 .github/           contribution templates and workflows

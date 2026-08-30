@@ -68,8 +68,10 @@ operational limitations, and clean-room provenance process.
 - Project site: `https://hk-775.github.io/aidlc-engine/`
 - Full logo: `site/assets/aidlc-engine-logo.svg`
 - Icon: `site/assets/aidlc-engine-icon.svg`
-- Architecture image: `site/assets/architecture.svg`
-- Architecture source: `site/assets/architecture.dot`
+- Architecture image: `site/assets/architecture.png`
+- Editable architecture source: `site/assets/architecture.drawio`
+- Static-site architecture image: `site/assets/architecture.svg`
+- Static-site vector source: `site/assets/architecture.dot`
 - Static site: `site/`
 
 ## Required pre-publication edits

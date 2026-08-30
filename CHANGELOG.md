@@ -10,6 +10,8 @@ principles of Keep a Changelog, and versions use semantic versioning.
 - Rename the project from AIDLC to AI-DLC Engine, including the `aidlc-engine`
   distribution and CLI, `aidlc_engine` Python package, project site, and
   repository metadata.
+- Make `uv tool install` the primary installation path and use the installed
+  `aidlc-engine` command throughout evaluator and operator documentation.
 - Use `.aidlc-engine` as the default local store while retaining the v1
   `.aidlc.lock` and `.aidlc.pending.json` filenames for store compatibility.
 
@@ -22,6 +24,9 @@ principles of Keep a Changelog, and versions use semantic versioning.
 - Reachable Git history scanning for credential and provenance markers.
 - Verified annotated-tag release artifacts with recorded SHA-256 digests.
 - Manual Pages deployment constrained to the reviewed public `main` branch.
+- Editable draw.io architecture source and a README PNG that distinguish the
+  implemented local engine from unconnected CI/CD, AWS deployment, and
+  production systems.
 
 ### Security
 

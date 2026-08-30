@@ -150,6 +150,12 @@ class RepositoryHygieneTests(WorkspaceTestCase):
         findings = scan_formatting(root)
         self.assertEqual(findings[0].message, "extra blank line at end of file")
 
+    def test_formatting_scan_skips_binary_assets(self) -> None:
+        root = self.workspace / "binary-formatting"
+        root.mkdir()
+        (root / "sample.png").write_bytes(b"\x89PNG\r\n\x1a\n\x00\xff")
+        self.assertEqual(scan_formatting(root), [])
+
     def test_python_syntax_scan_detects_invalid_source(self) -> None:
         root = self.workspace / "syntax"
         root.mkdir()
@@ -202,6 +208,15 @@ class RepositoryHygieneTests(WorkspaceTestCase):
             pyproject["build-system"]["requires"],
             ["setuptools==84.0.0"],
         )
+
+    def test_uv_is_the_primary_installation_path(self) -> None:
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        quickstart = (ROOT / "QUICKSTART.md").read_text(encoding="utf-8")
+        contributing = (ROOT / "CONTRIBUTING.md").read_text(encoding="utf-8")
+        self.assertIn("uv tool install .", readme)
+        self.assertIn("uv tool install .", quickstart)
+        self.assertIn("uv pip install --require-hashes", contributing)
+        self.assertNotIn("PYTHONPATH=src python3 -m aidlc_engine", quickstart)
 
     def test_pages_deployment_is_manual_main_only_and_permission_scoped(self) -> None:
         text = (ROOT / ".github" / "workflows" / "pages.yml").read_text(
@@ -302,15 +317,39 @@ class StaticSiteTests(WorkspaceTestCase):
                 self.assertIn("title", local_names)
                 self.assertIn("desc", local_names)
 
-    def test_architecture_source_and_rendered_asset_are_present(self) -> None:
-        source = (ROOT / "site" / "assets" / "architecture.dot").read_text(
+    def test_architecture_sources_and_rendered_assets_are_present(self) -> None:
+        dot_source = (ROOT / "site" / "assets" / "architecture.dot").read_text(
             encoding="utf-8"
         )
-        rendered = (ROOT / "site" / "assets" / "architecture.svg").read_text(
+        drawio_root = ET.parse(
+            ROOT / "site" / "assets" / "architecture.drawio"
+        ).getroot()
+        drawio_values = " ".join(
+            element.attrib.get("value", "") for element in drawio_root.iter()
+        )
+        svg = (ROOT / "site" / "assets" / "architecture.svg").read_text(
             encoding="utf-8"
         )
-        self.assertIn("Lifecycle core", source)
-        self.assertIn("Lifecycle core", rendered)
+        png = (ROOT / "site" / "assets" / "architecture.png").read_bytes()
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+
+        self.assertEqual(drawio_root.tag, "mxfile")
+        self.assertIn("Lifecycle core", dot_source)
+        self.assertIn("Lifecycle core", drawio_values)
+        self.assertIn("CI/CD + AWS deployment", drawio_values)
+        self.assertIn("Lifecycle core", svg)
+        self.assertEqual(png[:8], b"\x89PNG\r\n\x1a\n")
+        self.assertEqual(png[12:16], b"IHDR")
+        self.assertGreaterEqual(int.from_bytes(png[16:20], "big"), 1600)
+        self.assertGreaterEqual(int.from_bytes(png[20:24], "big"), 900)
+        self.assertIn(
+            "site/assets/architecture.png",
+            readme,
+        )
+        self.assertIn(
+            "site/assets/architecture.drawio",
+            readme,
+        )
 
     def test_static_demo_counts_match_executable_demo(self) -> None:
         script = (ROOT / "site" / "app.js").read_text(encoding="utf-8")

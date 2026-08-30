@@ -22,10 +22,13 @@ Do not submit:
 ## Development setup
 
 Python 3.11 or newer is required. Runtime dependencies are intentionally empty.
-Install the reviewed automation tools with hash verification when needed:
+Create a local environment and install the reviewed automation tools with `uv`
+and hash verification:
 
 ```console
-python -m pip install --require-hashes -r requirements-build.lock
+uv venv
+uv pip install --require-hashes -r requirements-build.lock
+uv tool install --editable .
 ```
 
 ```console

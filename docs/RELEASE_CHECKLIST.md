@@ -70,7 +70,7 @@ production ready.
 
 ## Post-release
 
-- [ ] Installation and quickstart are tested from the published source.
+- [ ] `uv tool install` and the quickstart are tested from the published source.
 - [ ] Release notes link to limitations and security reporting.
 - [ ] Known issues are opened and labeled.
 - [ ] Next version and support expectations are communicated.
