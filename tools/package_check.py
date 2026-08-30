@@ -1,0 +1,106 @@
+#!/usr/bin/env python3
+"""Build and inspect temporary source and wheel archives without publishing."""
+
+from __future__ import annotations
+
+import json
+import os
+import shutil
+import subprocess
+import sys
+import tarfile
+import tempfile
+import zipfile
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def main() -> int:
+    temporary_root = ROOT / ".tmp"
+    temporary_root.mkdir(exist_ok=True)
+    egg_info = ROOT / "src" / "aidlc_control_plane.egg-info"
+    result: dict[str, object] = {
+        "ok": False,
+        "build_command": "python -m build --no-isolation",
+    }
+    try:
+        with tempfile.TemporaryDirectory(
+            prefix="package-check-",
+            dir=temporary_root,
+        ) as directory:
+            output_directory = Path(directory) / "dist"
+            build_temporary_directory = Path(directory) / "tmp"
+            build_temporary_directory.mkdir()
+            command = [
+                sys.executable,
+                "-m",
+                "build",
+                "--no-isolation",
+                "--outdir",
+                str(output_directory),
+                str(ROOT),
+            ]
+            completed = subprocess.run(
+                command,
+                cwd=ROOT,
+                env={
+                    **os.environ,
+                    "TMPDIR": str(build_temporary_directory),
+                    "TEMP": str(build_temporary_directory),
+                    "TMP": str(build_temporary_directory),
+                },
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            archives = sorted(output_directory.glob("*")) if output_directory.exists() else []
+            wheel_members: list[str] = []
+            source_members: list[str] = []
+            for archive in archives:
+                if archive.suffix == ".whl":
+                    with zipfile.ZipFile(archive) as package:
+                        wheel_members = sorted(package.namelist())
+                elif archive.name.endswith(".tar.gz"):
+                    with tarfile.open(archive, "r:gz") as package:
+                        source_members = sorted(package.getnames())
+            required_wheel_suffixes = {
+                "aidlc/__init__.py",
+                "aidlc/cli.py",
+                "aidlc/service.py",
+            }
+            wheel_ok = all(
+                any(member.endswith(suffix) for member in wheel_members)
+                for suffix in required_wheel_suffixes
+            )
+            required_source_suffixes = {
+                "/README.md",
+                "/docs/ARCHITECTURE.md",
+                "/schemas/policy.schema.json",
+                "/site/index.html",
+                "/tests/test_lifecycle.py",
+            }
+            source_ok = all(
+                any(member.endswith(suffix) for member in source_members)
+                for suffix in required_source_suffixes
+            )
+            result = {
+                "ok": completed.returncode == 0 and len(archives) == 2 and wheel_ok and source_ok,
+                "returncode": completed.returncode,
+                "archive_count": len(archives),
+                "archive_names": [archive.name for archive in archives],
+                "wheel_member_count": len(wheel_members),
+                "source_member_count": len(source_members),
+                "wheel_contents_ok": wheel_ok,
+                "source_contents_ok": source_ok,
+                "stderr_tail": completed.stderr.splitlines()[-8:],
+            }
+    finally:
+        if egg_info.exists():
+            shutil.rmtree(egg_info)
+    print(json.dumps(result, sort_keys=True))
+    return 0 if result["ok"] else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

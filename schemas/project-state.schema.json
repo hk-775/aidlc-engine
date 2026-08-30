@@ -1,0 +1,389 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aidlc:schema:project-state:v1",
+  "title": "AIDLC project state",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project",
+    "policy_digest",
+    "current_stage",
+    "revision",
+    "artifacts",
+    "assignments",
+    "transition_proposals",
+    "risk_decisions",
+    "audit"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "description",
+        "created_at",
+        "created_by"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "created_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "created_by": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "policy_digest": {
+      "$ref": "#/$defs/hash"
+    },
+    "current_stage": {
+      "enum": [
+        "discovery",
+        "requirements",
+        "design",
+        "implementation",
+        "verification",
+        "release"
+      ]
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/artifact"
+      }
+    },
+    "assignments": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/assignment"
+      }
+    },
+    "transition_proposals": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/proposal"
+      }
+    },
+    "risk_decisions": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/riskDecision"
+      }
+    },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_count",
+        "head_hash"
+      ],
+      "properties": {
+        "event_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "head_hash": {
+          "$ref": "#/$defs/hash"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{1,63}$"
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?Z$"
+    },
+    "nullableTimestamp": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/timestamp"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "artifact": {
+      "type": "object",
+      "required": [
+        "id",
+        "stage",
+        "artifact_type",
+        "title",
+        "digest",
+        "locator",
+        "assignment_id",
+        "submitted_by",
+        "submitted_at"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "artifact_type": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "locator": {
+          "type": "string"
+        },
+        "assignment_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "submitted_by": {
+          "$ref": "#/$defs/id"
+        },
+        "submitted_at": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    },
+    "assignment": {
+      "type": "object",
+      "required": [
+        "id",
+        "stage",
+        "summary",
+        "deliverable_types",
+        "assignee_id",
+        "status",
+        "proposed_by",
+        "approved_by",
+        "created_at",
+        "approved_at",
+        "completed_at"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "deliverable_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "assignee_id": {
+          "$ref": "#/$defs/id"
+        },
+        "status": {
+          "enum": [
+            "proposed",
+            "active",
+            "completed"
+          ]
+        },
+        "proposed_by": {
+          "$ref": "#/$defs/id"
+        },
+        "approved_by": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "created_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "approved_at": {
+          "$ref": "#/$defs/nullableTimestamp"
+        },
+        "completed_at": {
+          "$ref": "#/$defs/nullableTimestamp"
+        }
+      }
+    },
+    "proposal": {
+      "type": "object",
+      "required": [
+        "id",
+        "source_stage",
+        "target_stage",
+        "rationale",
+        "evidence_ids",
+        "proposed_by",
+        "proposed_by_kind",
+        "status",
+        "created_at",
+        "resolved_at",
+        "rejected_by",
+        "rejection_reason",
+        "gate"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "source_stage": {
+          "type": "string"
+        },
+        "target_stage": {
+          "type": "string"
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "proposed_by": {
+          "$ref": "#/$defs/id"
+        },
+        "proposed_by_kind": {
+          "enum": [
+            "human",
+            "agent"
+          ]
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "approved",
+            "rejected"
+          ]
+        },
+        "created_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "resolved_at": {
+          "$ref": "#/$defs/nullableTimestamp"
+        },
+        "rejected_by": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rejection_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "gate": {
+          "type": "object",
+          "required": [
+            "required_roles",
+            "minimum_approvals",
+            "approvals"
+          ],
+          "properties": {
+            "required_roles": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "minimum_approvals": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "approvals": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "riskDecision": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "decision",
+        "rationale",
+        "decided_by",
+        "decided_at"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "title": {
+          "type": "string"
+        },
+        "decision": {
+          "const": "accepted"
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "decided_by": {
+          "$ref": "#/$defs/id"
+        },
+        "decided_at": {
+          "$ref": "#/$defs/timestamp"
+        }
+      }
+    }
+  }
+}

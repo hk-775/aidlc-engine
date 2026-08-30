@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "required_artifacts": {
+    "discovery": [
+      "opportunity_brief"
+    ],
+    "requirements": [
+      "delivery_requirements",
+      "acceptance_examples"
+    ],
+    "design": [
+      "solution_design",
+      "misuse_review"
+    ],
+    "implementation": [
+      "implementation_record",
+      "review_summary"
+    ],
+    "verification": [
+      "verification_report",
+      "release_rehearsal"
+    ],
+    "release": []
+  },
+  "human_gates": {
+    "requirements->design": {
+      "required_roles": [
+        "project_owner"
+      ],
+      "minimum_approvals": 1
+    },
+    "design->implementation": {
+      "required_roles": [
+        "technical_reviewer",
+        "project_owner"
+      ],
+      "minimum_approvals": 2
+    },
+    "verification->release": {
+      "required_roles": [
+        "release_manager",
+        "risk_owner"
+      ],
+      "minimum_approvals": 2
+    }
+  },
+  "agent_permissions": {
+    "propose_work": true,
+    "submit_artifact": true,
+    "complete_assigned_work": true,
+    "propose_transition": true,
+    "merge": false,
+    "deploy": false,
+    "release": false,
+    "accept_risk": false,
+    "approve_transition": false,
+    "satisfy_human_gate": false,
+    "bypass_gate": false
+  },
+  "transition_controls": {
+    "require_independent_approval": true,
+    "require_human_approval_for_all_transitions": true,
+    "block_with_open_assignments": true
+  },
+  "artifact_controls": {
+    "digest_algorithm": "sha256",
+    "agent_submission_requires_active_assignment": true
+  },
+  "limits": {
+    "max_artifacts": 500,
+    "max_open_assignments": 50,
+    "max_pending_proposals": 10
+  }
+}

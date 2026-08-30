@@ -1,0 +1,38 @@
+digraph aidlc {
+  graph [
+    bgcolor="transparent",
+    rankdir="LR",
+    pad="0.4",
+    nodesep="0.5",
+    ranksep="0.8"
+  ];
+  node [
+    shape="box",
+    style="rounded,filled",
+    color="#006d5b",
+    fillcolor="#ffffff",
+    fontname="Arial",
+    fontcolor="#14213d",
+    margin="0.18"
+  ];
+  edge [
+    color="#526176",
+    fontname="Arial",
+    fontcolor="#14213d"
+  ];
+
+  callers [label="Human and agent callers"];
+  cli [label="CLI and application service"];
+  policy [label="Policy validation"];
+  core [label="Lifecycle core"];
+  state [label="Atomic JSON state"];
+  audit [label="Append-only audit events"];
+  external [label="External delivery systems\n(not connected)", style="rounded,dashed"];
+
+  callers -> cli [label="requests"];
+  cli -> policy [label="validate"];
+  policy -> core [label="bounded operation"];
+  core -> state [label="snapshot"];
+  core -> audit [label="hash-linked event"];
+  core -> external [label="no execution", style="dashed"];
+}

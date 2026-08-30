@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src 'none'; img-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    >
+    <meta
+      name="description"
+      content="AIDLC is a local, human-governed control plane for agent-assisted software delivery."
+    >
+    <title>AIDLC | Human-governed software delivery</title>
+    <link rel="icon" href="assets/aidlc-icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <header class="site-header">
+      <div class="shell header-layout">
+        <a class="brand" href="index.html" aria-label="AIDLC home">
+          <img src="assets/aidlc-logo.svg" alt="AIDLC">
+        </a>
+        <nav aria-label="Primary navigation">
+          <ul>
+            <li><a href="#capabilities">Capabilities</a></li>
+            <li><a href="#demo">Demo</a></li>
+            <li><a href="#limits">Readiness</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero">
+        <div class="shell hero-grid">
+          <div>
+            <p class="eyebrow">AI Development Lifecycle</p>
+            <h1>Agent speed, bounded by human decisions.</h1>
+            <p class="lede">
+              AIDLC records work, evidence, transition proposals, approvals,
+              and audit events without granting agents release authority.
+            </p>
+            <a class="button" href="#demo">Inspect the synthetic workflow</a>
+          </div>
+          <div class="principle-card" aria-labelledby="principle-title">
+            <h2 id="principle-title">Hard boundary</h2>
+            <p>
+              Agents can prepare evidence and propose progress. Independent
+              humans retain gate, risk, and release decisions.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="capabilities" class="section shell">
+        <p class="eyebrow">Control-plane primitives</p>
+        <h2>Small enough to inspect, useful enough to evaluate</h2>
+        <div class="cards">
+          <article>
+            <h3>Deterministic lifecycle</h3>
+            <p>Six adjacent stages with policy-bound evidence requirements.</p>
+          </article>
+          <article>
+            <h3>Human gates</h3>
+            <p>Independent approvals and role coverage on high-impact changes.</p>
+          </article>
+          <article>
+            <h3>Local audit trail</h3>
+            <p>Append-only JSON events linked by canonical SHA-256 hashes.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="demo" class="section section-tint">
+        <div class="shell">
+          <p class="eyebrow">Synthetic local demonstration</p>
+          <h2>Civic Forms Pilot</h2>
+          <p>
+            This static view contains generated example data only. It makes no
+            network requests and does not read a live project store.
+          </p>
+          <div class="demo-grid">
+            <section class="status-panel" aria-labelledby="stage-heading">
+              <h3 id="stage-heading">Lifecycle status</h3>
+              <p id="stage-summary" class="stage-summary" aria-live="polite">
+                Loading local example data.
+              </p>
+              <ol id="stage-list" class="stage-list"></ol>
+            </section>
+            <section class="status-panel" aria-labelledby="audit-heading">
+              <h3 id="audit-heading">Audit summary</h3>
+              <dl id="audit-summary" class="metric-list"></dl>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="section shell" aria-labelledby="architecture-heading">
+        <p class="eyebrow">Architecture</p>
+        <h2 id="architecture-heading">Local components and trust boundary</h2>
+        <figure>
+          <img
+            class="architecture"
+            src="assets/architecture.svg"
+            alt="AIDLC architecture showing callers, policy service, lifecycle core, atomic state, and append-only audit events"
+          >
+          <figcaption>
+            The core records decisions but does not invoke source-control,
+            deployment, or production systems.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section id="limits" class="section section-dark">
+        <div class="shell narrow">
+          <p class="eyebrow">Honest readiness</p>
+          <h2>Evaluation software, not a production authorization system</h2>
+          <p>
+            The current release is a single-host local implementation. It has
+            no user authentication, remote API, database, cryptographic
+            signatures, key management, or distributed concurrency controls.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="shell">
+        <p>AIDLC open-source candidate. No telemetry, cookies, or external assets.</p>
+      </div>
+    </footer>
+  </body>
+</html>
