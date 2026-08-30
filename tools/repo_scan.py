@@ -11,6 +11,7 @@ import re
 import sys
 import tomllib
 from dataclasses import dataclass
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import Callable, Iterable
 
@@ -56,14 +57,19 @@ TEXT_SUFFIXES = {
 
 REQUIRED_FILES = {
     ".coveragerc",
-    ".github/CODEOWNERS",
+    ".github/ISSUE_TEMPLATE/config.yml",
     ".github/ISSUE_TEMPLATE/bug.yml",
     ".github/ISSUE_TEMPLATE/feature.yml",
+    ".github/ISSUE_TEMPLATE/question.yml",
+    ".github/actionlint.yaml",
     ".github/pull_request_template.md",
     ".github/workflows/ci.yml",
     ".github/workflows/pages.yml",
+    ".github/workflows/release.yml",
+    ".gitleaksignore",
     ".gitignore",
     "CHANGELOG.md",
+    "CODEOWNERS",
     "CODE_OF_CONDUCT.md",
     "CONTRIBUTING.md",
     "GOVERNANCE.md",
@@ -87,6 +93,7 @@ REQUIRED_FILES = {
     "docs/PRD.md",
     "docs/PRODUCTION_READINESS.md",
     "docs/RELEASE_CHECKLIST.md",
+    "docs/RELEASE_PROCESS.md",
     "docs/RESPONSIBLE_USE.md",
     "docs/THREAT_MODEL.md",
     "docs/WHITE_LABEL_CHECKLIST.md",
@@ -99,6 +106,17 @@ REQUIRED_FILES = {
     "site/app.js",
     "site/index.html",
     "site/styles.css",
+    "tools/history_scan.py",
+    "tools/release_check.py",
+}
+
+EXPECTED_PROJECT_URLS = {
+    "Homepage": "https://hk-775.github.io/aidlc/",
+    "Repository": "https://github.com/hk-775/aidlc",
+    "Issues": "https://github.com/hk-775/aidlc/issues",
+    "Documentation": "https://github.com/hk-775/aidlc/tree/main/docs",
+    "Changelog": "https://github.com/hk-775/aidlc/blob/main/CHANGELOG.md",
+    "Security": "https://github.com/hk-775/aidlc/security/policy",
 }
 
 
@@ -328,31 +346,170 @@ def scan_credentials(root: Path = ROOT) -> list[Finding]:
     return findings
 
 
+REMOTE_REFERENCE = re.compile(r"(?:https?:)?//", re.IGNORECASE)
+NETWORK_CODE = re.compile(
+    r"""(?ix)
+    @import\s+(?:url\()?["']?\s*(?:https?:)?//
+    |url\(\s*["']?\s*(?:https?:)?//
+    |\b(?:fetch|WebSocket|EventSource|XMLHttpRequest|sendBeacon)\s*\(
+    """
+)
+
+
+class _SiteAssetParser(HTMLParser):
+    loaded_attributes = {
+        "audio": ("src",),
+        "embed": ("src",),
+        "iframe": ("src",),
+        "image": ("href",),
+        "img": ("src", "srcset"),
+        "input": ("src",),
+        "object": ("data",),
+        "script": ("src",),
+        "source": ("src", "srcset"),
+        "use": ("href",),
+        "video": ("poster", "src"),
+    }
+    loaded_link_relations = {
+        "icon",
+        "manifest",
+        "modulepreload",
+        "prefetch",
+        "preload",
+        "stylesheet",
+    }
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.references: list[tuple[int, str]] = []
+
+    def handle_starttag(
+        self,
+        tag: str,
+        attrs: list[tuple[str, str | None]],
+    ) -> None:
+        values = dict(attrs)
+        for attribute in self.loaded_attributes.get(tag, ()):
+            value = values.get(attribute)
+            if value and REMOTE_REFERENCE.search(value):
+                self.references.append((self.getpos()[0], f"{tag} {attribute}"))
+        if tag == "link":
+            relations = set((values.get("rel") or "").casefold().split())
+            href = values.get("href")
+            if (
+                relations & self.loaded_link_relations
+                and href
+                and REMOTE_REFERENCE.search(href)
+            ):
+                self.references.append((self.getpos()[0], "link href"))
+        style = values.get("style")
+        if style and NETWORK_CODE.search(style):
+            self.references.append((self.getpos()[0], f"{tag} style"))
+
+
 def scan_external_assets(root: Path = ROOT) -> list[Finding]:
     findings = []
     site_root = root / "site"
     if not site_root.exists():
         return [Finding("external_assets", "site", "site directory is missing")]
-    external_reference = re.compile(
-        r"""(?ix)
-        (?:src|href)\s*=\s*["']\s*(?:https?:)?//
-        |@import\s+(?:url\()?["']?\s*(?:https?:)?//
-        |url\(\s*["']?\s*(?:https?:)?//
-        |\b(?:fetch|WebSocket|EventSource|XMLHttpRequest|sendBeacon)\s*\(
-        """
-    )
     for path in sorted(site_root.rglob("*")):
         if not path.is_file() or path.suffix not in {".html", ".css", ".js", ".svg"}:
             continue
         text = path.read_text(encoding="utf-8")
-        text = text.replace("http://www.w3.org/2000/svg", "")
-        for line_number, line in enumerate(text.splitlines(), start=1):
-            if external_reference.search(line):
+        if path.suffix in {".html", ".svg"}:
+            parser = _SiteAssetParser()
+            parser.feed(text)
+            for line_number, source in parser.references:
                 findings.append(
                     Finding(
                         "external_assets",
                         _relative(path, root),
-                        "external or network-loaded asset reference",
+                        f"network-loaded asset reference in {source}",
+                        line_number,
+                    )
+                )
+        for line_number, line in enumerate(text.splitlines(), start=1):
+            if NETWORK_CODE.search(line):
+                findings.append(
+                    Finding(
+                        "external_assets",
+                        _relative(path, root),
+                        "external asset or network API reference",
+                        line_number,
+                    )
+                )
+    return findings
+
+
+def scan_workflows(root: Path = ROOT) -> list[Finding]:
+    findings = []
+    workflow_root = root / ".github" / "workflows"
+    if not workflow_root.is_dir():
+        return [Finding("workflows", ".github/workflows", "directory is missing")]
+    action_reference = re.compile(r"^\s*(?:-\s*)?uses:\s*([^#\s]+)")
+    pinned_action = re.compile(r"[^@\s]+@[0-9a-fA-F]{40}")
+    for path in sorted((*workflow_root.glob("*.yml"), *workflow_root.glob("*.yaml"))):
+        text = path.read_text(encoding="utf-8")
+        relative = _relative(path, root)
+        lines = text.splitlines()
+        if not re.search(r"(?m)^permissions:\s*$", text):
+            findings.append(
+                Finding("workflows", relative, "top-level permissions are missing")
+            )
+        if "contents: read" not in text:
+            findings.append(
+                Finding("workflows", relative, "contents permission is not read-only")
+            )
+        for line_number, line in enumerate(lines, start=1):
+            if "runs-on: ubuntu-latest" in line:
+                findings.append(
+                    Finding(
+                        "workflows",
+                        relative,
+                        "runner must use an explicit Ubuntu version",
+                        line_number,
+                    )
+                )
+            if re.match(r"^\s*pull_request_target\s*:", line):
+                findings.append(
+                    Finding(
+                        "workflows",
+                        relative,
+                        "pull_request_target is not permitted",
+                        line_number,
+                    )
+                )
+            action_match = action_reference.match(line)
+            if not action_match:
+                continue
+            action = action_match.group(1)
+            if not action.startswith("./") and not pinned_action.fullmatch(action):
+                findings.append(
+                    Finding(
+                        "workflows",
+                        relative,
+                        f"action is not pinned to a full commit: {action}",
+                        line_number,
+                    )
+                )
+            if not action.startswith("actions/checkout@"):
+                continue
+            action_indent = len(line) - len(line.lstrip())
+            block = []
+            for following in lines[line_number:]:
+                following_indent = len(following) - len(following.lstrip())
+                if following.lstrip().startswith("- ") and following_indent <= action_indent:
+                    break
+                block.append(following)
+            if not any(
+                re.match(r"^\s*persist-credentials:\s*false\s*$", candidate)
+                for candidate in block
+            ):
+                findings.append(
+                    Finding(
+                        "workflows",
+                        relative,
+                        "checkout must disable persisted credentials",
                         line_number,
                     )
                 )
@@ -411,6 +568,22 @@ def scan_packaging(root: Path = ROOT) -> list[Finding]:
                         "runtime dependency list must remain empty",
                     )
                 )
+            if project.get("urls") != EXPECTED_PROJECT_URLS:
+                findings.append(
+                    Finding(
+                        "packaging",
+                        "pyproject.toml",
+                        "canonical project URLs are missing or inconsistent",
+                    )
+                )
+            if project.get("license-files") != ["LICENSE", "NOTICE"]:
+                findings.append(
+                    Finding(
+                        "packaging",
+                        "pyproject.toml",
+                        "license files are not explicitly declared",
+                    )
+                )
         except (KeyError, OSError, tomllib.TOMLDecodeError) as error:
             findings.append(Finding("packaging", "pyproject.toml", str(error)))
     ignore_path = root / ".gitignore"
@@ -438,6 +611,7 @@ SCANS: dict[str, Callable[[Path], list[Finding]]] = {
     "branding_provenance": scan_branding_provenance,
     "credentials": scan_credentials,
     "external_assets": scan_external_assets,
+    "workflows": scan_workflows,
     "forbidden_operations": scan_forbidden_operation_contract,
     "packaging": scan_packaging,
 }

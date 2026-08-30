@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This record explains how the AIDLC open-source candidate was produced while
+This record explains how the AIDLC open-source project was produced while
 avoiding reuse of provenance-sensitive material.
 
 ## Source boundary

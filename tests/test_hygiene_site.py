@@ -18,6 +18,7 @@ from tools.repo_scan import (
     scan_external_assets,
     scan_formatting,
     scan_python_syntax,
+    scan_workflows,
 )
 
 
@@ -38,14 +39,14 @@ class RepositoryHygieneTests(WorkspaceTestCase):
     def test_complete_repository_scan_passes(self) -> None:
         result = run_scans(ROOT)
         self.assertTrue(result["ok"], result["findings"])
-        self.assertEqual(result["scan_count"], 8)
+        self.assertEqual(result["scan_count"], 9)
 
     def test_repository_scan_cli_allows_empty_selection(self) -> None:
         output = io.StringIO()
         with contextlib.redirect_stdout(output):
             return_code = repo_scan_main([])
         self.assertEqual(return_code, 0)
-        self.assertEqual(json.loads(output.getvalue())["scan_count"], 8)
+        self.assertEqual(json.loads(output.getvalue())["scan_count"], 9)
 
     def test_repository_scan_cli_rejects_unknown_selection(self) -> None:
         error = io.StringIO()
@@ -94,6 +95,45 @@ class RepositoryHygieneTests(WorkspaceTestCase):
         )
         findings = scan_external_assets(root)
         self.assertEqual(len(findings), 1)
+
+    def test_external_asset_scan_allows_navigational_links(self) -> None:
+        root = self.workspace / "external-navigation"
+        site = root / "site"
+        site.mkdir(parents=True)
+        remote = "https:" + "//example.invalid/project"
+        (site / "index.html").write_text(
+            f'<a href="{remote}">Repository</a>\n',
+            encoding="utf-8",
+        )
+        self.assertEqual(scan_external_assets(root), [])
+
+    def test_workflow_scan_detects_unpinned_action(self) -> None:
+        root = self.workspace / "workflow"
+        workflows = root / ".github" / "workflows"
+        workflows.mkdir(parents=True)
+        (workflows / "bad.yml").write_text(
+            "\n".join(
+                (
+                    "name: Bad workflow",
+                    "on: workflow_dispatch",
+                    "permissions:",
+                    "  contents: read",
+                    "jobs:",
+                    "  test:",
+                    "    runs-on: ubuntu-24.04",
+                    "    steps:",
+                    "      - uses: actions/checkout@v4",
+                    "        with:",
+                    "          persist-credentials: false",
+                    "",
+                )
+            ),
+            encoding="utf-8",
+        )
+        findings = scan_workflows(root)
+        self.assertTrue(
+            any("not pinned to a full commit" in finding.message for finding in findings)
+        )
 
     def test_formatting_scan_detects_trailing_whitespace(self) -> None:
         root = self.workspace / "formatting"
@@ -185,11 +225,30 @@ class StaticSiteTests(WorkspaceTestCase):
         for tag, attrs in self.parser.tags:
             if tag in {"img", "script"} and attrs.get("src"):
                 referenced.append(attrs["src"])
-            if tag == "link" and attrs.get("href"):
+            relations = set((attrs.get("rel") or "").split())
+            if (
+                tag == "link"
+                and relations & {"icon", "manifest", "modulepreload", "preload", "stylesheet"}
+                and attrs.get("href")
+            ):
                 referenced.append(attrs["href"])
         for reference in referenced:
             with self.subTest(reference=reference):
                 self.assertTrue((ROOT / "site" / str(reference)).is_file())
+
+    def test_canonical_and_repository_links_are_configured(self) -> None:
+        links = [attrs for tag, attrs in self.parser.tags if tag == "link"]
+        canonical = next(
+            attrs for attrs in links if "canonical" in (attrs.get("rel") or "").split()
+        )
+        self.assertEqual(canonical.get("href"), "https://hk-775.github.io/aidlc/")
+        anchors = [attrs for tag, attrs in self.parser.tags if tag == "a"]
+        self.assertTrue(
+            any(
+                attrs.get("href") == "https://github.com/hk-775/aidlc"
+                for attrs in anchors
+            )
+        )
 
     def test_javascript_uses_safe_text_rendering(self) -> None:
         script = (ROOT / "site" / "app.js").read_text(encoding="utf-8")

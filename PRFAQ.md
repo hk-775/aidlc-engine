@@ -8,7 +8,7 @@ Draft product narrative for discussion. It is not a launch commitment.
 
 Software teams evaluating coding agents often face a control problem: useful
 agent work arrives faster than the evidence and decisions needed to govern it.
-AIDLC is an open-source control-plane candidate that separates proposal from
+AIDLC is an open-source control plane that separates proposal from
 authority. Agents can prepare assigned work and propose the next lifecycle
 stage. People approve transitions, represent required review roles, and retain
 risk and release decisions.

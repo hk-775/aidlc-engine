@@ -36,6 +36,8 @@ production ready.
 - [ ] Branch coverage is recorded and reviewed.
 - [ ] Repository scans pass.
 - [ ] Credential scan passes.
+- [ ] Reachable Git history scan passes.
+- [ ] Workflow actions are pinned to full commit identifiers.
 - [ ] gitleaks runs successfully, or unavailability is disclosed.
 - [ ] Synthetic demo reaches expected counts and valid audit state.
 - [ ] Package source and wheel build in temporary storage.
@@ -59,6 +61,8 @@ production ready.
 - [ ] Logo and icon render at intended sizes.
 - [ ] Launch copy avoids unsupported claims.
 - [ ] Pages deployment is manually approved.
+- [ ] Release tag is annotated and matches both package version declarations.
+- [ ] Release workflow produces exactly one source archive and one wheel.
 - [ ] Tag, source archive, and package digests are recorded.
 - [ ] Published artifacts are signed if the release process supports signing.
 

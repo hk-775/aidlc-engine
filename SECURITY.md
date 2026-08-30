@@ -13,9 +13,12 @@ Do not open a public issue for a vulnerability that could expose data, bypass a
 human gate, corrupt the audit sequence, escape a storage boundary, or grant
 agent authority.
 
-Use the repository host's private vulnerability-reporting feature once it is
-enabled. Before then, distribute this repository only within a review group
-that has an agreed private reporting channel.
+Use GitHub's
+[private vulnerability reporting form](https://github.com/hk-775/aidlc/security/advisories/new).
+If GitHub reports that the form is unavailable, do not open a public issue.
+Contact the repository steward through a previously verified private channel.
+Public repository launch requires private vulnerability reporting to be
+enabled and tested.
 
 A useful report includes:
 

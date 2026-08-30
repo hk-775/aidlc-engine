@@ -1,8 +1,10 @@
 # AIDLC governance
 
 This document describes the intended governance model for an independent
-open-source project. Named individuals and hosting organizations have not yet
-been appointed.
+open-source project. The GitHub account `@hk-775` is the bootstrap repository
+steward, maintainer, security contact, and release steward until additional
+maintainers are appointed. These roles describe project responsibility; they
+do not imply independent assurance, certification, or warranty.
 
 ## Principles
 
@@ -36,6 +38,22 @@ certification or warranty.
 
 Maintainers who coordinate a release checklist, versioning, provenance review,
 and artifact verification. Release stewards cannot waive required approvals.
+
+## Bootstrap period
+
+The project begins with one repository steward. During this period:
+
+- ordinary changes require the steward's review or a recorded independent
+  review when the steward authored the change;
+- lifecycle, security, schema, governance, dependency, and public-release
+  changes require an independent security review recorded in an issue or pull
+  request;
+- the steward cannot represent that a self-review is independent; and
+- any release without the normally required two maintainers must disclose the
+  bootstrap exception in its release notes.
+
+The standard two-maintainer rules below take effect as soon as a second
+maintainer and a designated security reviewer are appointed.
 
 ## Decision process
 

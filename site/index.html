@@ -11,7 +11,20 @@
       name="description"
       content="AIDLC is a local, human-governed control plane for agent-assisted software delivery."
     >
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="AIDLC | Human-governed software delivery">
+    <meta
+      property="og:description"
+      content="A local control plane that keeps agent-assisted delivery decisions under explicit human authority."
+    >
+    <meta property="og:url" content="https://hk-775.github.io/aidlc/">
+    <meta
+      property="og:image"
+      content="https://hk-775.github.io/aidlc/assets/architecture.svg"
+    >
+    <meta name="twitter:card" content="summary_large_image">
     <title>AIDLC | Human-governed software delivery</title>
+    <link rel="canonical" href="https://hk-775.github.io/aidlc/">
     <link rel="icon" href="assets/aidlc-icon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="styles.css">
     <script src="app.js" defer></script>
@@ -28,6 +41,7 @@
             <li><a href="#capabilities">Capabilities</a></li>
             <li><a href="#demo">Demo</a></li>
             <li><a href="#limits">Readiness</a></li>
+            <li><a href="https://github.com/hk-775/aidlc">Repository</a></li>
           </ul>
         </nav>
       </div>
@@ -43,7 +57,12 @@
               AIDLC records work, evidence, transition proposals, approvals,
               and audit events without granting agents release authority.
             </p>
-            <a class="button" href="#demo">Inspect the synthetic workflow</a>
+            <div class="hero-actions">
+              <a class="button" href="#demo">Inspect the synthetic workflow</a>
+              <a class="text-link" href="https://github.com/hk-775/aidlc">
+                Review the source
+              </a>
+            </div>
           </div>
           <div class="principle-card" aria-labelledby="principle-title">
             <h2 id="principle-title">Hard boundary</h2>
@@ -128,8 +147,15 @@
     </main>
 
     <footer>
-      <div class="shell">
-        <p>AIDLC open-source candidate. No telemetry, cookies, or external assets.</p>
+      <div class="shell footer-layout">
+        <p>AIDLC Apache-2.0 alpha. No telemetry, cookies, or external assets.</p>
+        <ul class="footer-links">
+          <li><a href="https://github.com/hk-775/aidlc">Repository</a></li>
+          <li><a href="https://github.com/hk-775/aidlc/tree/main/docs">Docs</a></li>
+          <li>
+            <a href="https://github.com/hk-775/aidlc/security/policy">Security</a>
+          </li>
+        </ul>
       </div>
     </footer>
   </body>

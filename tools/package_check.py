@@ -13,6 +13,11 @@ import tempfile
 import zipfile
 from pathlib import Path
 
+try:
+    from tools.release_check import ReleaseCheckError, read_version, verify_distribution
+except ModuleNotFoundError:
+    from release_check import ReleaseCheckError, read_version, verify_distribution
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -74,18 +79,40 @@ def main() -> int:
                 for suffix in required_wheel_suffixes
             )
             required_source_suffixes = {
+                "/.github/workflows/release.yml",
+                "/.gitleaksignore",
+                "/CODEOWNERS",
                 "/README.md",
                 "/docs/ARCHITECTURE.md",
+                "/docs/RELEASE_PROCESS.md",
                 "/schemas/policy.schema.json",
                 "/site/index.html",
                 "/tests/test_lifecycle.py",
+                "/tools/history_scan.py",
+                "/tools/release_check.py",
             }
             source_ok = all(
                 any(member.endswith(suffix) for member in source_members)
                 for suffix in required_source_suffixes
             )
+            release_artifacts = []
+            release_check_error = None
+            if completed.returncode == 0:
+                try:
+                    release_artifacts = verify_distribution(
+                        output_directory,
+                        read_version(ROOT),
+                    )
+                except (OSError, ReleaseCheckError) as error:
+                    release_check_error = str(error)
             result = {
-                "ok": completed.returncode == 0 and len(archives) == 2 and wheel_ok and source_ok,
+                "ok": (
+                    completed.returncode == 0
+                    and len(archives) == 2
+                    and wheel_ok
+                    and source_ok
+                    and release_check_error is None
+                ),
                 "returncode": completed.returncode,
                 "archive_count": len(archives),
                 "archive_names": [archive.name for archive in archives],
@@ -93,6 +120,8 @@ def main() -> int:
                 "source_member_count": len(source_members),
                 "wheel_contents_ok": wheel_ok,
                 "source_contents_ok": source_ok,
+                "release_artifacts": release_artifacts,
+                "release_check_error": release_check_error,
                 "output_tail": (
                     completed.stdout.splitlines() + completed.stderr.splitlines()
                 )[-12:],

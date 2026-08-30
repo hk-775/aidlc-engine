@@ -5,6 +5,24 @@ principles of Keep a Changelog, and versions use semantic versioning.
 
 ## [Unreleased]
 
+### Added
+
+- Canonical repository, documentation, issue, security, and project-site
+  metadata.
+- Root ownership rules, private security-reporting links, and explicit
+  bootstrap governance.
+- Reachable Git history scanning for credential and provenance markers.
+- Verified annotated-tag release artifacts with recorded SHA-256 digests.
+- Automated Pages deployment for reviewed changes on the public default
+  branch.
+
+### Security
+
+- Pin GitHub Actions to full commit identifiers and disable persisted checkout
+  credentials.
+- Pin CI runners to Ubuntu 24.04 and validate workflow hardening in repository
+  scans.
+
 ### Fixed
 
 - Keep repository scan selection compatible with Python 3.11.

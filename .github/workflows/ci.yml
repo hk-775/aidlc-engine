@@ -2,6 +2,10 @@ name: CI
 
 on:
   push:
+    branches:
+      - main
+    tags:
+      - "v*"
   pull_request:
   workflow_dispatch:
 
@@ -15,7 +19,7 @@ concurrency:
 jobs:
   test:
     name: Python ${{ matrix.python-version }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -26,9 +30,11 @@ jobs:
           - "3.13"
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ matrix.python-version }}
       - name: Run tests
@@ -38,15 +44,38 @@ jobs:
       - name: Run synthetic demo
         run: make demo
 
+  security:
+    name: Source and history safety
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out complete history
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.12"
+      - name: Run repository scans
+        run: make scan
+      - name: Scan reachable Git history
+        run: make history-scan
+      - name: Check committed whitespace
+        run: git diff-tree --check --root --no-commit-id HEAD --
+
   package:
     name: Package dry run
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: "3.12"
       - name: Install build toolchain

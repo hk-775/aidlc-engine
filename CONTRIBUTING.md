@@ -27,6 +27,7 @@ Python 3.11 or newer is required. Runtime dependencies are intentionally empty.
 make test
 make coverage
 make scan
+make history-scan
 make demo
 make package-check
 ```
@@ -68,6 +69,10 @@ A pull request should:
 4. list validation performed;
 5. update documentation and changelog entries when appropriate; and
 6. confirm provenance and synthetic-data requirements.
+
+Workflow changes must pin external actions to full commit identifiers and
+disable persisted checkout credentials. Release changes must follow
+[docs/RELEASE_PROCESS.md](docs/RELEASE_PROCESS.md).
 
 At least one maintainer reviews ordinary changes. Changes to hard safety
 invariants, schemas, security boundaries, governance, or releases require two

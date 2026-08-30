@@ -9,13 +9,14 @@ PYTHON ?= $(shell \
 export PYTHONPATH := src
 export PYTHONDONTWRITEBYTECODE := 1
 
-.PHONY: help check-python test coverage scan demo package-check check site
+.PHONY: help check-python test coverage scan history-scan demo package-check check site
 
 help:
 	@echo "AIDLC developer targets:"
 	@echo "  make test          Run the standard-library test suite"
 	@echo "  make coverage      Run branch coverage"
 	@echo "  make scan          Run repository safety and quality scans"
+	@echo "  make history-scan  Scan every reachable Git blob"
 	@echo "  make demo          Run the complete deterministic demo"
 	@echo "  make package-check Build and inspect temporary package archives"
 	@echo "  make check         Run tests, scans, demo, and package validation"
@@ -37,6 +38,9 @@ coverage: check-python
 
 scan: check-python
 	$(PYTHON) tools/repo_scan.py --pretty
+
+history-scan: check-python
+	$(PYTHON) tools/history_scan.py --pretty
 
 demo: check-python
 	$(PYTHON) tools/demo_check.py

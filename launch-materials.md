@@ -1,8 +1,9 @@
 # AIDLC launch materials draft
 
-Status: working copy for a future alpha announcement. Do not publish without
-the release checklist, governance approval, link replacement, and a fresh
-security review.
+Status: publication-ready draft for the alpha repository. Do not announce or
+change repository visibility until the exact commit has a fresh independent
+security review, GitHub private vulnerability reporting is enabled, and the
+publication checklist is complete.
 
 ## One-line description
 
@@ -62,6 +63,8 @@ operational limitations, and clean-room provenance process.
 
 ## Assets
 
+- Repository: `https://github.com/hk-775/aidlc`
+- Project site: `https://hk-775.github.io/aidlc/`
 - Full logo: `site/assets/aidlc-logo.svg`
 - Icon: `site/assets/aidlc-icon.svg`
 - Architecture image: `site/assets/architecture.svg`
@@ -70,8 +73,9 @@ operational limitations, and clean-room provenance process.
 
 ## Required pre-publication edits
 
-- Configure package and repository links after publication locations are final.
-- Configure real repository ownership and reporting contacts.
+- Confirm the exact commit has a fresh independent security review.
+- Enable and test GitHub private vulnerability reporting.
+- Confirm repository ownership, branch rules, topics, and Pages settings.
 - Confirm license and notice text with project counsel.
 - Run all tests, scans, coverage, package checks, and the release checklist.
 - Review screenshots and announcement copy for current behavior.

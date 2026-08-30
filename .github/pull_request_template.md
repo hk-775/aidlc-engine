@@ -12,9 +12,11 @@ audit integrity, or external boundaries. Write "none" only after checking.
 - [ ] Standard-library tests pass.
 - [ ] Branch coverage was reviewed.
 - [ ] Repository scans pass.
+- [ ] Reachable Git history scan passes.
 - [ ] Synthetic demo passes.
 - [ ] Temporary package build and inspection pass.
 - [ ] New behavior has denial and malformed-input tests.
+- [ ] Workflow actions are pinned to full commit identifiers when applicable.
 
 ## Provenance and data
 

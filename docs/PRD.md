@@ -6,7 +6,7 @@ AIDLC: AI Development Lifecycle.
 
 ## Status
 
-Alpha open-source candidate for local evaluation.
+Open-source alpha for local evaluation.
 
 ## Problem
 

@@ -1,13 +1,23 @@
 # AIDLC
 
+[![CI](https://github.com/hk-775/aidlc/actions/workflows/ci.yml/badge.svg)](https://github.com/hk-775/aidlc/actions/workflows/ci.yml)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776ab.svg)](pyproject.toml)
+
 AIDLC (AI Development Lifecycle) is a human-governed control plane for
 agent-assisted software delivery. It gives agents a bounded place to propose
 work, submit evidence, and request lifecycle transitions while reserving
 approval, risk, and release authority for people.
 
-This repository is an open-source candidate at **alpha** maturity. The current
-implementation is designed for local evaluation on one POSIX host. It is not a
-production authorization service.
+This repository is an open-source project at **alpha** maturity. The current
+implementation is designed for local evaluation on one POSIX host. It is not
+a production authorization service.
+
+[Project site](https://hk-775.github.io/aidlc/) ·
+[Architecture](docs/ARCHITECTURE.md) ·
+[Quickstart](QUICKSTART.md) ·
+[Security](SECURITY.md) ·
+[Changelog](CHANGELOG.md)
 
 ![AIDLC architecture](site/assets/architecture.svg)
 
@@ -58,9 +68,17 @@ decision; it does not publish or deploy anything.
 
 ## Fast evaluation
 
+Clone the canonical repository, then run the complete local checks:
+
+```console
+git clone https://github.com/hk-775/aidlc.git
+cd aidlc
+```
+
 ```console
 make test
 make scan
+make history-scan
 make demo
 make package-check
 ```
@@ -137,6 +155,10 @@ tools/           quality, safety, demo, and package checks
 docs/            product, architecture, security, and operations material
 .github/         contribution templates and workflows
 ```
+
+Release archives are built as verified GitHub Actions artifacts from annotated
+tags. The workflow does not publish to a package index. See
+[docs/RELEASE_PROCESS.md](docs/RELEASE_PROCESS.md).
 
 ## Configuration
 

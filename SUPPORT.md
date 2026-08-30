@@ -1,14 +1,18 @@
 # Support
 
-AIDLC is a community open-source candidate with no paid support, uptime
+AIDLC is a community open-source alpha project with no paid support, uptime
 commitment, response guarantee, or production service.
 
 ## Where to ask
 
-- Use the question issue form for reproducible, non-sensitive usage questions
-  after a public project tracker is configured.
-- Use the bug form for incorrect behavior.
-- Use a private channel for security issues as described in `SECURITY.md`.
+- Use the
+  [question form](https://github.com/hk-775/aidlc/issues/new?template=question.yml)
+  for reproducible, non-sensitive usage questions.
+- Use the
+  [bug form](https://github.com/hk-775/aidlc/issues/new?template=bug.yml)
+  for incorrect behavior.
+- Use private vulnerability reporting as described in
+  [SECURITY.md](SECURITY.md).
 - Use governance processes for scope, conduct, or maintainer decisions.
 
 Before asking, run:
