@@ -5,8 +5,8 @@ from __future__ import annotations
 import copy
 from typing import Any
 
-from aidlc.errors import ValidationError
-from aidlc.models import (
+from aidlc_engine.errors import ValidationError
+from aidlc_engine.models import (
     ADJACENT_TRANSITIONS,
     AGENT_PERMISSION_KEYS,
     ARTIFACT_TYPE_PATTERN,

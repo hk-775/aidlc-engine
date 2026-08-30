@@ -12,7 +12,7 @@ export PYTHONDONTWRITEBYTECODE := 1
 .PHONY: help check-python test coverage scan history-scan demo package-check check site
 
 help:
-	@echo "AIDLC developer targets:"
+	@echo "AI-DLC Engine developer targets:"
 	@echo "  make test          Run the standard-library test suite"
 	@echo "  make coverage      Run branch coverage"
 	@echo "  make scan          Run repository safety and quality scans"

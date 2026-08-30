@@ -2,7 +2,7 @@
 * @hk-775
 
 # Security-sensitive and release-critical areas.
-/src/aidlc/ @hk-775
+/src/aidlc_engine/ @hk-775
 /schemas/ @hk-775
 /tools/ @hk-775
 /.github/workflows/ @hk-775

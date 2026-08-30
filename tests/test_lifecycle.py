@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import copy
 
-from aidlc.errors import AuthorizationError, ConflictError
-from aidlc.models import Actor, STAGES
-from aidlc.policy import default_policy
-from aidlc.service import sha256_digest
+from aidlc_engine.errors import AuthorizationError, ConflictError
+from aidlc_engine.models import Actor, STAGES
+from aidlc_engine.policy import default_policy
+from aidlc_engine.service import sha256_digest
 from tests.support import GovernedProjectTestCase
 
 

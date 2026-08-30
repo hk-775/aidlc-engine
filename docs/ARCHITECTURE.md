@@ -2,9 +2,10 @@
 
 ## Purpose
 
-AIDLC is a local control plane for recording bounded agent work and human
-delivery decisions. The architecture favors inspectability and deterministic
-behavior over distribution, integration breadth, or throughput.
+AI-DLC Engine is a local automation engine for recording bounded agent work and
+human delivery decisions across the AI Development Lifecycle. The architecture
+favors inspectability and deterministic behavior over distribution,
+integration breadth, or throughput.
 
 Architecture source: [`../site/assets/architecture.dot`](../site/assets/architecture.dot)
 
@@ -14,13 +15,13 @@ Rendered asset: [`../site/assets/architecture.svg`](../site/assets/architecture.
 
 ### CLI
 
-`aidlc.cli` parses commands, constructs an asserted actor, invokes the
+`aidlc_engine.cli` parses commands, constructs an asserted actor, invokes the
 application service, and emits JSON. It maps expected errors to stable nonzero
 exit codes. The CLI contains no integration client and makes no network calls.
 
 ### Lifecycle service
 
-`aidlc.service` owns user-visible operations:
+`aidlc_engine.service` owns user-visible operations:
 
 - propose, approve, and complete work;
 - register artifact metadata;
@@ -34,7 +35,8 @@ while the project lock is held.
 
 ### Policy validator
 
-`aidlc.policy` defines defaults and validates a complete policy object. Unknown
+`aidlc_engine.policy` defines defaults and validates a complete policy object.
+Unknown
 fields fail validation. Safety controls are code invariants:
 
 - every transition requires a human;
@@ -49,14 +51,15 @@ manual policy edits are detected.
 
 ### Model and value layer
 
-`aidlc.models` contains stage order, actor rules, identifier patterns, and
-state-shape checks. `aidlc.values` provides production-local values or
+`aidlc_engine.models` contains stage order, actor rules, identifier patterns,
+and state-shape checks. `aidlc_engine.values` provides production-local values or
 deterministic identifiers and timestamps for tests and demonstrations.
 
 ### JSON repository
 
-`aidlc.persistence` stores one project in one directory. A POSIX advisory lock
-serializes initialization, reads that verify integrity, and mutations.
+`aidlc_engine.persistence` stores one project in one directory. A POSIX
+advisory lock serializes initialization, reads that verify integrity, and
+mutations.
 
 The durable files are:
 
@@ -67,12 +70,13 @@ audit/<sequence>-<event-id>.json
 ```
 
 The lock file is operational. A pending transaction file exists only between
-transaction preparation and completion.
+transaction preparation and completion. Their v1 filenames remain
+`.aidlc.lock` and `.aidlc.pending.json` for compatibility with existing stores.
 
 ### Audit layer
 
-`aidlc.audit` canonicalizes JSON with sorted keys and compact separators. Each
-event contains the previous hash, then hashes its own unsigned fields with
+`aidlc_engine.audit` canonicalizes JSON with sorted keys and compact separators.
+Each event contains the previous hash, then hashes its own unsigned fields with
 SHA-256. Verification checks:
 
 - contiguous filenames and sequences;

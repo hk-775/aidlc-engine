@@ -59,7 +59,7 @@ Status: **partially mitigated**
 
 The artifact record is in project state and is rechecked at approval. External
 artifact content is not managed, so its locator can disappear or content can
-change. The digest enables independent checking but AIDLC does not perform it.
+change. The digest enables independent checking but AI-DLC Engine does not perform it.
 
 Required work: content-addressed storage integration or an approval-time
 verifier with a trusted evidence boundary.
@@ -97,7 +97,7 @@ across supported filesystems.
 
 Status: **open**
 
-Advisory locking coordinates cooperative AIDLC processes, not arbitrary
+Advisory locking coordinates cooperative AI-DLC Engine processes, not arbitrary
 writers.
 
 Required work: move production state behind a transactional service or
@@ -108,8 +108,9 @@ database with authenticated access.
 Status: **partially mitigated**
 
 The project root, lock, audit directory, and read paths reject symbolic links.
-Event creation uses no-follow where supported. Race-free directory traversal
-is not formally established.
+Lock and JSON reads use no-follow where supported, event creation is exclusive,
+and the project and audit directories are normalized to owner-only access.
+Race-free traversal of every ancestor component is not formally established.
 
 Required work: descriptor-relative file operations, dedicated storage
 directory ownership, and platform-specific security testing.
@@ -135,10 +136,11 @@ Residual issue: a hosting workflow or operator can modify published output.
 
 ### AR-13: Package metadata implies a real service
 
-Status: **mitigated by omitted links and checklist**
+Status: **mitigated by configured links and validation**
 
-Project URLs are omitted until publication locations exist. The release and
-white-label checklists require operators to configure them before publishing.
+Project URLs identify the intended repository, documentation, issue tracker,
+site, changelog, and security policy. Repository scans and the release and
+white-label checklists require operators to review them before publishing.
 
 ### AR-14: Hash chain is described as immutable
 

@@ -1,4 +1,4 @@
-# Contributing to AIDLC
+# Contributing to AI-DLC Engine
 
 Thank you for helping improve a human-governed approach to agent-assisted
 delivery.
@@ -22,6 +22,11 @@ Do not submit:
 ## Development setup
 
 Python 3.11 or newer is required. Runtime dependencies are intentionally empty.
+Install the reviewed automation tools with hash verification when needed:
+
+```console
+python -m pip install --require-hashes -r requirements-build.lock
+```
 
 ```console
 make test

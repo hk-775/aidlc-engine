@@ -1,6 +1,6 @@
 # White-label checklist
 
-Complete this checklist before adapting or publishing AIDLC under a different
+Complete this checklist before adapting or publishing AI-DLC Engine under a different
 project or organization identity.
 
 ## Ownership and contacts
@@ -61,6 +61,7 @@ project or organization identity.
 - [ ] Run tests, coverage, scans, demo, and package inspection.
 - [ ] Run the full release checklist.
 - [ ] Review static-site links, content policy, accessibility, and metadata.
-- [ ] Configure manual Pages deployment permissions.
+- [ ] Keep Pages deployment manual, constrained to `main`, and protected by
+      environment reviewers.
 - [ ] Remove local state, temporary output, coverage data, and archives.
 - [ ] Inspect the final source archive before publishing.

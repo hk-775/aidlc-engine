@@ -1,25 +1,25 @@
-# AIDLC
+# AI-DLC Engine
 
-[![CI](https://github.com/hk-775/aidlc/actions/workflows/ci.yml/badge.svg)](https://github.com/hk-775/aidlc/actions/workflows/ci.yml)
+[![CI](https://github.com/hk-775/aidlc-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/hk-775/aidlc-engine/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776ab.svg)](pyproject.toml)
 
-AIDLC (AI Development Lifecycle) is a human-governed control plane for
-agent-assisted software delivery. It gives agents a bounded place to propose
-work, submit evidence, and request lifecycle transitions while reserving
-approval, risk, and release authority for people.
+AI-DLC Engine is the human-governed automation engine for the AI Development
+Lifecycle (AI-DLC) framework. It automates lifecycle state, evidence
+requirements, bounded work assignments, approval gates, and audit records
+while keeping risk and release authority with people.
 
 This repository is an open-source project at **alpha** maturity. The current
 implementation is designed for local evaluation on one POSIX host. It is not
 a production authorization service.
 
-[Project site](https://hk-775.github.io/aidlc/) ·
+[Project site](https://hk-775.github.io/aidlc-engine/) ·
 [Architecture](docs/ARCHITECTURE.md) ·
 [Quickstart](QUICKSTART.md) ·
 [Security](SECURITY.md) ·
 [Changelog](CHANGELOG.md)
 
-![AIDLC architecture](site/assets/architecture.svg)
+![AI-DLC Engine architecture](site/assets/architecture.svg)
 
 ## What it does
 
@@ -55,9 +55,9 @@ Agents cannot:
 - satisfy a human gate; or
 - bypass a required gate.
 
-AIDLC also does not connect to source-control, deployment, identity, ticketing,
-or production systems. Reaching the `release` stage records a governance
-decision; it does not publish or deploy anything.
+AI-DLC Engine does not connect to source-control, deployment, identity,
+ticketing, or production systems. Reaching the `release` stage records a
+governance decision; it does not publish or deploy anything.
 
 ## Requirements
 
@@ -71,8 +71,8 @@ decision; it does not publish or deploy anything.
 Clone the canonical repository, then run the complete local checks:
 
 ```console
-git clone https://github.com/hk-775/aidlc.git
-cd aidlc
+git clone https://github.com/hk-775/aidlc-engine.git
+cd aidlc-engine
 ```
 
 ```console
@@ -86,8 +86,10 @@ make package-check
 Or run the demo directly:
 
 ```console
-PYTHONPATH=src python3 -m aidlc --store .tmp/my-demo demo
+PYTHONPATH=src python3 -m aidlc_engine --store .tmp/my-demo demo
 ```
+
+After package installation, use the equivalent `aidlc-engine` console command.
 
 The demo should report the `release` stage, 32 valid audit events, five
 artifacts, five assignments, and five transition proposals.
@@ -108,8 +110,8 @@ emit an object with `"ok": false`, a stable error code, a message, and details,
 then return a nonzero exit status.
 
 ```console
-PYTHONPATH=src python3 -m aidlc \
-  --store .aidlc-example \
+PYTHONPATH=src python3 -m aidlc_engine \
+  --store .aidlc-engine-example \
   --id-seed evaluation \
   --fixed-time 2026-01-15T12:00:00Z \
   init \
@@ -136,8 +138,12 @@ audit/
 ```
 
 A short-lived `.aidlc.pending.json` file can appear during a transaction. On
-the next locked operation, AIDLC completes a valid pending write before reading
-state. Audit event files are created exclusively and are never updated by the
+the next locked operation, AI-DLC Engine completes a valid pending write before
+reading state. These two internal filenames remain unchanged from the v1 store
+format so existing stores stay safe and readable. A legacy store can be opened
+by passing its path explicitly, for example `--store .aidlc`.
+
+Audit event files are created exclusively and are never updated by the
 application. Their hash chain detects later modification, deletion, insertion,
 or reordering, and the final event binds the current state content. This does
 not provide cryptographic authorship or protection against an administrator
@@ -146,14 +152,14 @@ who can replace the entire store.
 ## Project layout
 
 ```text
-src/aidlc/       lifecycle, policy, persistence, audit, CLI, and demo
-tests/           standard-library unit and integration tests
-schemas/         JSON Schema documents
-examples/        synthetic policy and evidence
-site/            offline static project site and SVG assets
-tools/           quality, safety, demo, and package checks
-docs/            product, architecture, security, and operations material
-.github/         contribution templates and workflows
+src/aidlc_engine/  lifecycle, policy, persistence, audit, CLI, and demo
+tests/             standard-library unit and integration tests
+schemas/           JSON Schema documents
+examples/          synthetic policy and evidence
+site/              offline static project site and SVG assets
+tools/             quality, safety, demo, and package checks
+docs/              product, architecture, security, and operations material
+.github/           contribution templates and workflows
 ```
 
 Release archives are built as verified GitHub Actions artifacts from annotated
@@ -189,8 +195,8 @@ The detailed readiness ledger is in
 ## Security and responsible use
 
 Read [SECURITY.md](SECURITY.md), [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md),
-and [docs/RESPONSIBLE_USE.md](docs/RESPONSIBLE_USE.md) before using AIDLC in an
-evaluation that includes sensitive data.
+and [docs/RESPONSIBLE_USE.md](docs/RESPONSIBLE_USE.md) before using AI-DLC
+Engine in an evaluation that includes sensitive data.
 
 ## Contributing
 

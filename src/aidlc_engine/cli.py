@@ -9,13 +9,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Sequence
 
-from aidlc.demo import run_demo
-from aidlc.errors import AIDLCError, PersistenceError, ValidationError
-from aidlc.models import Actor
-from aidlc.persistence import JsonProjectRepository
-from aidlc.policy import validate_policy
-from aidlc.service import LifecycleService, sha256_digest
-from aidlc.values import DeterministicValueProvider, ValueProvider, parse_timestamp
+from aidlc_engine.demo import run_demo
+from aidlc_engine.errors import AIDLCEngineError, PersistenceError, ValidationError
+from aidlc_engine.models import Actor
+from aidlc_engine.persistence import JsonProjectRepository
+from aidlc_engine.policy import validate_policy
+from aidlc_engine.service import LifecycleService, sha256_digest
+from aidlc_engine.values import DeterministicValueProvider, ValueProvider, parse_timestamp
 
 
 def _actor_from_args(args: argparse.Namespace) -> Actor:
@@ -76,10 +76,16 @@ def _emit(value: dict[str, Any], *, pretty: bool, stream: Any | None = None) -> 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="aidlc",
-        description="Human-governed local control plane for agent-assisted delivery.",
+        prog="aidlc-engine",
+        description=(
+            "Human-governed automation engine for the AI Development Lifecycle."
+        ),
     )
-    parser.add_argument("--store", default=".aidlc", help="Local project storage directory.")
+    parser.add_argument(
+        "--store",
+        default=".aidlc-engine",
+        help="Local project storage directory.",
+    )
     parser.add_argument("--pretty", action="store_true", help="Pretty-print JSON output.")
     parser.add_argument("--id-seed", help="Deterministic identifier seed.")
     parser.add_argument("--fixed-time", help="Deterministic UTC ISO-8601 base time.")
@@ -279,7 +285,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         result = execute(args)
-    except AIDLCError as error:
+    except AIDLCEngineError as error:
         _emit({"ok": False, "error": error.to_dict()}, pretty=args.pretty, stream=sys.stderr)
         return error.exit_code
     except Exception as error:  # pragma: no cover - defensive CLI boundary

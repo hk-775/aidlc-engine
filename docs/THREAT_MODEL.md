@@ -82,7 +82,7 @@ Controls:
 - stored SHA-256 digest; and
 - duplicate detection for stage/type/digest.
 
-Residual risk: AIDLC does not retrieve or re-hash external artifact content.
+Residual risk: AI-DLC Engine does not retrieve or re-hash external artifact content.
 The caller must independently verify that content still matches the digest.
 
 ### Gate bypass through configuration
@@ -120,7 +120,7 @@ Threat: event modification, deletion, insertion, or reordering.
 Controls:
 
 - exclusive event creation;
-- read-only event file mode;
+- owner-read-only event file mode;
 - contiguous filename checks;
 - canonical content hashes;
 - previous-hash chain;
@@ -164,8 +164,10 @@ location.
 Controls:
 
 - key storage paths reject symbolic links;
-- event creation uses no-follow where available;
-- artifact locators must be safe relative paths; and
+- lock, read, and event creation use no-follow where available;
+- project and audit directories are normalized to owner-only access;
+- artifact locators must be normalized safe relative paths without control
+  characters; and
 - the core never opens artifact locators.
 
 Residual risk: callers can deliberately choose a project root anywhere they

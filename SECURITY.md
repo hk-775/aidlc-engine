@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-AIDLC has not yet published a supported production release. The current
+AI-DLC Engine has not yet published a supported production release. The current
 `0.1.x` line is an alpha evaluation candidate. Security fixes are applied to
 the latest source revision when maintainers can reproduce and safely address
 the issue.
@@ -14,7 +14,7 @@ human gate, corrupt the audit sequence, escape a storage boundary, or grant
 agent authority.
 
 Use GitHub's
-[private vulnerability reporting form](https://github.com/hk-775/aidlc/security/advisories/new).
+[private vulnerability reporting form](https://github.com/hk-775/aidlc-engine/security/advisories/new).
 If GitHub reports that the form is unavailable, do not open a public issue.
 Contact the repository steward through a previously verified private channel.
 Public repository launch requires private vulnerability reporting to be
@@ -61,7 +61,8 @@ administrator.
 ## Safe evaluation
 
 - Use synthetic, non-sensitive content.
-- Place the store in a user-owned directory with restrictive permissions.
+- Place the store in a user-owned directory. AI-DLC Engine normalizes the project and
+  audit directories to owner-only permissions but does not harden ancestors.
 - Do not run the CLI with elevated privileges.
 - Verify the audit chain before and after an evaluation.
 - Keep external execution systems disconnected.

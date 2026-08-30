@@ -2,7 +2,7 @@
 
 ## Readiness statement
 
-AIDLC 0.1.0 is suitable for local, synthetic evaluation. It is **not ready** to
+AI-DLC Engine 0.1.0 is suitable for local, synthetic evaluation. It is **not ready** to
 authorize production software delivery. The ledger below separates implemented
 evidence from unresolved work.
 
@@ -38,7 +38,7 @@ Status meanings:
 | Incident response | Partial | Security policy and local runbook | On-call ownership, drills, forensic retention |
 | Performance evidence | Missing | No benchmark | Workload model, targets, repeatable benchmark |
 | Scalability | Missing | Linear audit verification | Indexing, archival, load and capacity tests |
-| Supply-chain assurance | Partial | No runtime deps, pinned CI actions, source/history scans, verified release archives | Signed releases, reproducible builds, provenance attestations |
+| Supply-chain assurance | Partial | No runtime deps, pinned CI actions, hash-locked build tools, source/history scans, verified release archives | Signed releases, reproducible builds, provenance attestations |
 | Security testing | Partial | Unit adversarial cases and scans | Independent review, fuzzing, fault injection |
 | Accessibility | Partial | Semantic local site and automated source checks | Manual assistive-technology audit |
 | Privacy | Partial | Synthetic defaults and warnings | Data inventory, retention, deletion, legal review |

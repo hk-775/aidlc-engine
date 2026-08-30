@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:aidlc:schema:policy:v1",
-  "title": "AIDLC policy",
+  "$id": "urn:aidlc-engine:schema:policy:v1",
+  "title": "AI-DLC Engine policy",
   "type": "object",
   "additionalProperties": false,
   "required": [

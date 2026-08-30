@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify AIDLC release identity and built artifact digests."""
+"""Verify AI-DLC Engine release identity and built artifact digests."""
 
 from __future__ import annotations
 
@@ -21,19 +21,22 @@ SEMANTIC_VERSION = re.compile(
     r"(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?"
 )
 REQUIRED_WHEEL_SUFFIXES = {
-    "aidlc/__init__.py",
-    "aidlc/cli.py",
-    "aidlc/service.py",
+    "aidlc_engine/__init__.py",
+    "aidlc_engine/cli.py",
+    "aidlc_engine/service.py",
+    ".dist-info/entry_points.txt",
     ".dist-info/licenses/LICENSE",
     ".dist-info/licenses/NOTICE",
     ".dist-info/METADATA",
 }
+REQUIRED_ENTRY_POINT_LINE = "aidlc-engine = aidlc_engine.cli:main"
 REQUIRED_SOURCE_SUFFIXES = {
     "/.github/workflows/release.yml",
     "/.gitleaksignore",
     "/CODEOWNERS",
     "/README.md",
     "/docs/RELEASE_PROCESS.md",
+    "/requirements-build.lock",
     "/schemas/policy.schema.json",
     "/site/index.html",
     "/tests/test_lifecycle.py",
@@ -44,8 +47,8 @@ REQUIRED_METADATA_LINES = {
     "License-Expression: Apache-2.0",
     "License-File: LICENSE",
     "License-File: NOTICE",
-    "Project-URL: Repository, https://github.com/hk-775/aidlc",
-    "Project-URL: Security, https://github.com/hk-775/aidlc/security/policy",
+    "Project-URL: Repository, https://github.com/hk-775/aidlc-engine",
+    "Project-URL: Security, https://github.com/hk-775/aidlc-engine/security/policy",
 }
 
 
@@ -54,7 +57,7 @@ class ReleaseCheckError(RuntimeError):
 
 
 def _source_version(root: Path) -> str:
-    path = root / "src" / "aidlc" / "__init__.py"
+    path = root / "src" / "aidlc_engine" / "__init__.py"
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
     for node in tree.body:
         if not isinstance(node, ast.Assign) or len(node.targets) != 1:
@@ -67,7 +70,7 @@ def _source_version(root: Path) -> str:
             and isinstance(node.value.value, str)
         ):
             return node.value.value
-    raise ReleaseCheckError("src/aidlc/__init__.py has no literal __version__")
+    raise ReleaseCheckError("src/aidlc_engine/__init__.py has no literal __version__")
 
 
 def read_version(root: Path = ROOT) -> str:
@@ -120,8 +123,8 @@ def verify_annotated_tag(root: Path, tag: str) -> str:
 
 def verify_distribution(directory: Path, version: str) -> list[dict[str, object]]:
     expected_names = {
-        f"aidlc_control_plane-{version}-py3-none-any.whl",
-        f"aidlc_control_plane-{version}.tar.gz",
+        f"aidlc_engine-{version}-py3-none-any.whl",
+        f"aidlc_engine-{version}.tar.gz",
     }
     if not directory.is_dir():
         raise ReleaseCheckError(f"distribution directory is missing: {directory}")
@@ -157,6 +160,12 @@ def verify_distribution(directory: Path, version: str) -> list[dict[str, object]
                         if member.endswith(".dist-info/METADATA")
                     )
                     metadata = archive.read(metadata_name).decode("utf-8")
+                    entry_points_name = next(
+                        member
+                        for member in members
+                        if member.endswith(".dist-info/entry_points.txt")
+                    )
+                    entry_points = archive.read(entry_points_name).decode("utf-8")
             except (KeyError, StopIteration, UnicodeError, zipfile.BadZipFile) as error:
                 raise ReleaseCheckError(f"invalid wheel: {path.name}") from error
             missing_metadata = sorted(
@@ -165,6 +174,10 @@ def verify_distribution(directory: Path, version: str) -> list[dict[str, object]
             if missing_metadata:
                 raise ReleaseCheckError(
                     f"wheel metadata is missing required fields: {missing_metadata}"
+                )
+            if REQUIRED_ENTRY_POINT_LINE not in entry_points:
+                raise ReleaseCheckError(
+                    "wheel entry points do not expose the aidlc-engine command"
                 )
         elif path.name.endswith(".tar.gz"):
             try:

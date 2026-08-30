@@ -99,6 +99,7 @@ REQUIRED_FILES = {
     "docs/WHITE_LABEL_CHECKLIST.md",
     "launch-materials.md",
     "pyproject.toml",
+    "requirements-build.lock",
     "requirements.lock",
     "schemas/audit-event.schema.json",
     "schemas/policy.schema.json",
@@ -111,12 +112,12 @@ REQUIRED_FILES = {
 }
 
 EXPECTED_PROJECT_URLS = {
-    "Homepage": "https://hk-775.github.io/aidlc/",
-    "Repository": "https://github.com/hk-775/aidlc",
-    "Issues": "https://github.com/hk-775/aidlc/issues",
-    "Documentation": "https://github.com/hk-775/aidlc/tree/main/docs",
-    "Changelog": "https://github.com/hk-775/aidlc/blob/main/CHANGELOG.md",
-    "Security": "https://github.com/hk-775/aidlc/security/policy",
+    "Homepage": "https://hk-775.github.io/aidlc-engine/",
+    "Repository": "https://github.com/hk-775/aidlc-engine",
+    "Issues": "https://github.com/hk-775/aidlc-engine/issues",
+    "Documentation": "https://github.com/hk-775/aidlc-engine/tree/main/docs",
+    "Changelog": "https://github.com/hk-775/aidlc-engine/blob/main/CHANGELOG.md",
+    "Security": "https://github.com/hk-775/aidlc-engine/security/policy",
 }
 
 
@@ -274,10 +275,10 @@ def scan_branding_provenance(root: Path = ROOT) -> list[Finding]:
         for finding in scan_denylist(root)
     ]
     expected_branding = {
-        "README.md": "AIDLC",
-        "pyproject.toml": 'name = "aidlc-control-plane"',
-        "site/index.html": "AIDLC",
-        "site/assets/aidlc-logo.svg": "AIDLC logo",
+        "README.md": "AI-DLC Engine",
+        "pyproject.toml": 'name = "aidlc-engine"',
+        "site/index.html": "AI-DLC Engine",
+        "site/assets/aidlc-engine-logo.svg": "AI-DLC Engine logo",
     }
     for relative_path, expected_text in expected_branding.items():
         path = root / relative_path
@@ -295,7 +296,7 @@ def scan_branding_provenance(root: Path = ROOT) -> list[Finding]:
                 Finding(
                     "branding_provenance",
                     relative_path,
-                    "expected AIDLC branding marker is missing",
+                    "expected AI-DLC Engine branding marker is missing",
                 )
             )
     return findings
@@ -519,19 +520,19 @@ def scan_workflows(root: Path = ROOT) -> list[Finding]:
 def scan_forbidden_operation_contract(root: Path = ROOT) -> list[Finding]:
     del root
     try:
-        from aidlc.models import HARD_DENIED_AGENT_OPERATIONS
-        from aidlc.policy import default_policy, validate_policy
+        from aidlc_engine.models import HARD_DENIED_AGENT_OPERATIONS
+        from aidlc_engine.policy import default_policy, validate_policy
 
         policy = validate_policy(default_policy())
     except Exception as error:
-        return [Finding("forbidden_operations", "src/aidlc", str(error))]
+        return [Finding("forbidden_operations", "src/aidlc_engine", str(error))]
     findings = []
     for operation in sorted(HARD_DENIED_AGENT_OPERATIONS):
         if policy["agent_permissions"].get(operation) is not False:
             findings.append(
                 Finding(
                     "forbidden_operations",
-                    "src/aidlc/policy.py",
+                    "src/aidlc_engine/policy.py",
                     f"agent operation is not hard denied: {operation}",
                 )
             )
@@ -556,7 +557,7 @@ def scan_packaging(root: Path = ROOT) -> list[Finding]:
     if pyproject_path.exists():
         try:
             project = tomllib.loads(pyproject_path.read_text(encoding="utf-8"))["project"]
-            if project.get("name") != "aidlc-control-plane":
+            if project.get("name") != "aidlc-engine":
                 findings.append(
                     Finding("packaging", "pyproject.toml", "unexpected package name")
                 )
@@ -566,6 +567,16 @@ def scan_packaging(root: Path = ROOT) -> list[Finding]:
                         "packaging",
                         "pyproject.toml",
                         "runtime dependency list must remain empty",
+                    )
+                )
+            if project.get("scripts") != {
+                "aidlc-engine": "aidlc_engine.cli:main",
+            }:
+                findings.append(
+                    Finding(
+                        "packaging",
+                        "pyproject.toml",
+                        "console script identity is missing or inconsistent",
                     )
                 )
             if project.get("urls") != EXPECTED_PROJECT_URLS:
@@ -595,6 +606,7 @@ def scan_packaging(root: Path = ROOT) -> list[Finding]:
             "*.whl",
             "*.tar.gz",
             "demo-data/",
+            "!requirements-build.lock",
             "!requirements.lock",
         ):
             if pattern not in ignore_text:

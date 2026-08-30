@@ -21,7 +21,7 @@ make check
 make coverage
 ```
 
-`make check` runs the test suite, eight repository scans, the complete
+`make check` runs the test suite, nine repository scans, the complete
 deterministic demo, and a temporary source/wheel build inspection. A successful
 demo reaches the terminal lifecycle stage with a valid 32-event audit chain.
 
@@ -37,9 +37,9 @@ PYTHONPATH=src python3 tools/package_check.py
 ## Manual smoke test
 
 ```console
-PYTHONPATH=src python3 -m aidlc --store .tmp/startup-demo demo
-PYTHONPATH=src python3 -m aidlc --store .tmp/startup-demo verify-audit
-PYTHONPATH=src python3 -m aidlc --store .tmp/startup-demo status
+PYTHONPATH=src python3 -m aidlc_engine --store .tmp/startup-demo demo
+PYTHONPATH=src python3 -m aidlc_engine --store .tmp/startup-demo verify-audit
+PYTHONPATH=src python3 -m aidlc_engine --store .tmp/startup-demo status
 ```
 
 Confirm:
@@ -54,7 +54,7 @@ Confirm:
 ## Safety smoke test
 
 ```console
-PYTHONPATH=src python3 -m aidlc \
+PYTHONPATH=src python3 -m aidlc_engine \
   --store .tmp/startup-demo \
   guard-operation \
   --actor-id agent_builder \
@@ -79,9 +79,10 @@ demo metrics are not populated.
 ## Storage cleanup
 
 Evaluation data is written only to the store path provided on the command line.
-Paths under `.tmp/`, `.aidlc/`, `.aidlc-*`, `demo-data/`, and `local-data/` are
-ignored. Remove a demo directory only after confirming it contains no needed
-audit record.
+Paths under `.tmp/`, `.aidlc-engine/`, `.aidlc-engine-*`, the legacy
+`.aidlc/` and `.aidlc-*` patterns, `demo-data/`, and `local-data/` are ignored.
+Remove a demo directory only after confirming it contains no needed audit
+record.
 
 ## Review entry points
 

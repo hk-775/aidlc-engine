@@ -80,7 +80,7 @@ button:focus-visible {
 
 .brand img {
   display: block;
-  width: 150px;
+  width: 240px;
   height: auto;
 }
 
@@ -335,6 +335,10 @@ footer {
 
   .header-layout {
     padding: 1rem 0;
+  }
+
+  .brand img {
+    width: min(220px, 60vw);
   }
 
   .footer-layout {

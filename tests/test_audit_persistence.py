@@ -6,9 +6,9 @@ import stat
 from pathlib import Path
 from unittest import mock
 
-from aidlc.audit import canonical_bytes, event_hash, state_digest
-from aidlc.errors import ConflictError, IntegrityError, PersistenceError
-from aidlc.service import sha256_digest
+from aidlc_engine.audit import canonical_bytes, event_hash, state_digest
+from aidlc_engine.errors import ConflictError, IntegrityError, PersistenceError
+from aidlc_engine.service import sha256_digest
 from tests.support import GovernedProjectTestCase, WorkspaceTestCase
 
 
@@ -120,7 +120,7 @@ class AuditIntegrityTests(GovernedProjectTestCase):
 
     def test_event_files_are_written_read_only(self) -> None:
         mode = stat.S_IMODE(self._event_paths()[0].stat().st_mode)
-        self.assertEqual(mode & stat.S_IWUSR, 0)
+        self.assertEqual(mode, 0o400)
 
     def test_revision_is_one_less_than_event_count(self) -> None:
         self.fulfill_current_stage()
@@ -209,14 +209,69 @@ class PersistenceRecoveryTests(GovernedProjectTestCase):
 
 
 class StorageBoundaryTests(WorkspaceTestCase):
+    def test_existing_storage_directories_are_secured(self) -> None:
+        root = self.workspace / "permissive"
+        root.mkdir(mode=0o755)
+        audit = root / "audit"
+        audit.mkdir(mode=0o755)
+        root.chmod(0o755)
+        audit.chmod(0o755)
+
+        repository, _ = self.create_project(path=root)
+
+        self.assertEqual(stat.S_IMODE(root.stat().st_mode), 0o700)
+        self.assertEqual(stat.S_IMODE(audit.stat().st_mode), 0o700)
+        self.assertEqual(stat.S_IMODE(repository.state_path.stat().st_mode), 0o600)
+        self.assertEqual(stat.S_IMODE(repository.policy_path.stat().st_mode), 0o600)
+        event = next(audit.glob("*.json"))
+        self.assertEqual(stat.S_IMODE(event.stat().st_mode), 0o400)
+
+    def test_symbolic_link_lock_file_is_rejected(self) -> None:
+        root = self.workspace / "lock-link"
+        root.mkdir()
+        target = self.workspace / "outside-lock"
+        target.write_bytes(b"")
+        os.symlink(target, root / ".aidlc.lock")
+
+        with self.assertRaises(PersistenceError) as context:
+            self.create_project(path=root)
+        self.assertEqual(context.exception.code, "unsafe_storage_path")
+
     def test_symbolic_link_project_root_is_rejected(self) -> None:
         real = self.workspace / "real"
         real.mkdir()
         linked = self.workspace / "linked"
         os.symlink(real, linked)
-        from aidlc.persistence import JsonProjectRepository
+        from aidlc_engine.persistence import JsonProjectRepository
 
         repository = JsonProjectRepository(linked)
         with self.assertRaises(PersistenceError) as context:
             repository.load()
         self.assertEqual(context.exception.code, "unsafe_storage_path")
+
+    def test_dangling_symbolic_link_project_root_is_rejected(self) -> None:
+        linked = self.workspace / "dangling-root"
+        os.symlink(self.workspace / "missing-root", linked)
+        from aidlc_engine.persistence import JsonProjectRepository
+
+        repository = JsonProjectRepository(linked)
+        with self.assertRaises(PersistenceError) as context:
+            repository.load()
+        self.assertEqual(context.exception.code, "unsafe_storage_path")
+
+    def test_dangling_symbolic_link_audit_directory_is_rejected(self) -> None:
+        root = self.workspace / "dangling-audit"
+        root.mkdir()
+        os.symlink(self.workspace / "missing-audit", root / "audit")
+
+        with self.assertRaises(PersistenceError) as context:
+            self.create_project(path=root)
+        self.assertEqual(context.exception.code, "unsafe_storage_path")
+
+    def test_json_fifo_is_rejected_without_blocking(self) -> None:
+        repository, _ = self.create_project()
+        repository.state_path.unlink()
+        os.mkfifo(repository.state_path, mode=0o600)
+
+        with self.assertRaises(PersistenceError):
+            repository.load()

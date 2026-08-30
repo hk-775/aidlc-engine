@@ -1,4 +1,4 @@
-digraph aidlc {
+digraph aidlc_engine {
   graph [
     bgcolor="transparent",
     rankdir="LR",

@@ -3,17 +3,16 @@
 from __future__ import annotations
 
 import hashlib
-from pathlib import PurePosixPath
 from typing import Any
 
-from aidlc.errors import (
+from aidlc_engine.errors import (
     AuthorizationError,
     ConflictError,
     ForbiddenOperationError,
     NotFoundError,
     ValidationError,
 )
-from aidlc.models import (
+from aidlc_engine.models import (
     ARTIFACT_TYPE_PATTERN,
     DIGEST_PATTERN,
     HARD_DENIED_AGENT_OPERATIONS,
@@ -21,11 +20,12 @@ from aidlc.models import (
     Actor,
     next_stage,
     transition_key,
+    validate_locator,
     validate_stage,
     validate_text,
 )
-from aidlc.persistence import JsonProjectRepository, MutationResult
-from aidlc.policy import default_policy
+from aidlc_engine.persistence import JsonProjectRepository, MutationResult
+from aidlc_engine.policy import default_policy
 
 
 def sha256_digest(content: bytes) -> str:
@@ -103,19 +103,7 @@ class LifecycleService:
 
     @staticmethod
     def _validate_locator(locator: str) -> str:
-        if not isinstance(locator, str):
-            raise ValidationError("artifact locator must be a string")
-        locator = locator.strip()
-        if not locator:
-            return ""
-        if "\\" in locator:
-            raise ValidationError("artifact locator must use portable forward slashes")
-        path = PurePosixPath(locator)
-        if path.is_absolute() or ".." in path.parts:
-            raise ValidationError("artifact locator must be a safe relative path")
-        if ":" in path.parts[0]:
-            raise ValidationError("network and scheme-based artifact locators are unsupported")
-        return locator
+        return validate_locator(locator)
 
     def propose_work(
         self,
@@ -682,7 +670,7 @@ class LifecycleService:
             return {"authorized": True, "operation": operation, "actor": actor.to_dict()}
         if operation in {"merge", "deploy", "release", "bypass_gate", "satisfy_human_gate"}:
             raise ForbiddenOperationError(
-                "AIDLC does not execute or bypass external delivery actions",
+                "AI-DLC Engine does not execute or bypass external delivery actions",
                 code="external_execution_not_supported",
                 details={"operation": operation},
             )

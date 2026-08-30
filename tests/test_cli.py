@@ -7,7 +7,7 @@ import sys
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 
-from aidlc.cli import main
+from aidlc_engine.cli import build_parser, main
 from tests.support import ROOT, WorkspaceTestCase
 
 
@@ -27,6 +27,20 @@ class CLITests(WorkspaceTestCase):
             "--fixed-time",
             "2026-02-02T10:00:00Z",
         )
+
+    def test_default_store_uses_engine_slug(self) -> None:
+        args = build_parser().parse_args(["status"])
+        self.assertEqual(build_parser().prog, "aidlc-engine")
+        self.assertEqual(args.store, ".aidlc-engine")
+
+    def test_explicit_legacy_store_path_remains_supported(self) -> None:
+        store = self.workspace / ".aidlc"
+        code, demo, _ = self.run_cli("--store", str(store), "demo")
+        self.assertEqual(code, 0)
+        self.assertEqual(demo["demo"]["current_stage"], "release")
+        code, status, _ = self.run_cli("--store", str(store), "status")
+        self.assertEqual(code, 0)
+        self.assertEqual(status["state"]["current_stage"], "release")
 
     def test_init_emits_machine_readable_state(self) -> None:
         store = self.workspace / "cli-project"
@@ -182,7 +196,7 @@ class CLITests(WorkspaceTestCase):
             "PYTHONDONTWRITEBYTECODE": "1",
         }
         completed = subprocess.run(
-            [sys.executable, "-m", "aidlc", "--help"],
+            [sys.executable, "-m", "aidlc_engine", "--help"],
             cwd=ROOT,
             env=environment,
             capture_output=True,

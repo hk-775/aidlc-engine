@@ -1,4 +1,4 @@
-from aidlc.cli import main
+from aidlc_engine.cli import main
 
 
 if __name__ == "__main__":

@@ -4,19 +4,19 @@ import copy
 import json
 from datetime import datetime
 
-from aidlc.audit import GENESIS_HASH, validate_event, verify_event
-from aidlc.errors import (
+from aidlc_engine.audit import GENESIS_HASH, validate_event, verify_event
+from aidlc_engine.errors import (
     ConflictError,
     IntegrityError,
     NotFoundError,
     PersistenceError,
     ValidationError,
 )
-from aidlc.models import Actor, validate_state, validate_text
-from aidlc.persistence import JsonProjectRepository
-from aidlc.policy import default_policy, validate_policy
-from aidlc.service import sha256_digest
-from aidlc.values import (
+from aidlc_engine.models import Actor, validate_state, validate_text
+from aidlc_engine.persistence import JsonProjectRepository
+from aidlc_engine.policy import default_policy, validate_policy
+from aidlc_engine.service import sha256_digest
+from aidlc_engine.values import (
     DeterministicValueProvider,
     format_timestamp,
     parse_timestamp,
@@ -30,12 +30,14 @@ class AuditValidationEdgeTests(GovernedProjectTestCase):
         cases = {
             "schema_version": ("schema_version", 2),
             "sequence": ("sequence", 0),
+            "boolean_sequence": ("sequence", True),
             "event_id": ("event_id", "Bad Event"),
             "timestamp": ("timestamp", "not-a-time"),
             "type": ("type", ""),
             "actor": ("actor", []),
             "project_id": ("project_id", "Bad Project"),
             "state_revision": ("state_revision", -1),
+            "boolean_state_revision": ("state_revision", True),
             "state_digest": ("state_digest", "short"),
             "payload": ("payload", []),
             "previous_hash": ("previous_hash", "short"),
@@ -55,6 +57,31 @@ class AuditValidationEdgeTests(GovernedProjectTestCase):
         event["actor"]["extra"] = True
         with self.assertRaises(ValidationError):
             validate_event(event)
+
+    def test_actor_values_in_event_are_validated(self) -> None:
+        valid = self.repository.list_events()[0]
+        actors = (
+            {"id": 7, "kind": "human", "roles": []},
+            {"id": "human_owner", "kind": "root", "roles": []},
+            {"id": "human_owner", "kind": [], "roles": []},
+            {"id": "human_owner", "kind": "human", "roles": [1]},
+            {
+                "id": "human_owner",
+                "kind": "human",
+                "roles": ["project_owner", "project_owner"],
+            },
+            {
+                "id": "agent_builder",
+                "kind": "agent",
+                "roles": ["release_manager"],
+            },
+        )
+        for actor in actors:
+            with self.subTest(actor=actor):
+                event = copy.deepcopy(valid)
+                event["actor"] = actor
+                with self.assertRaises(ValidationError):
+                    validate_event(event)
 
     def test_wrong_previous_hash_is_detected(self) -> None:
         event = self.repository.list_events()[0]
@@ -115,6 +142,7 @@ class ModelValidationEdgeTests(GovernedProjectTestCase):
         for audit in (
             [],
             {"event_count": 0, "head_hash": "0" * 64},
+            {"event_count": True, "head_hash": "0" * 64},
             {"event_count": 1, "head_hash": "short"},
         ):
             with self.subTest(audit=audit):
@@ -122,6 +150,58 @@ class ModelValidationEdgeTests(GovernedProjectTestCase):
                 state["audit"] = audit
                 with self.assertRaises(ValidationError):
                     validate_state(state)
+
+    def test_nested_state_records_are_fully_validated(self) -> None:
+        fulfilled = self.fulfill_current_stage()
+        proposal = self.propose_current_transition(
+            evidence_ids=[fulfilled["artifact"]["id"]]
+        )
+        decision = self.service.record_risk_acceptance(
+            actor=self.risk_owner,
+            title="Synthetic validation risk",
+            rationale="Exercise nested state validation.",
+        )["risk_decision"]
+        base = self.repository.load()
+        cases = (
+            lambda state: state["artifacts"][fulfilled["artifact"]["id"]].pop("title"),
+            lambda state: state["artifacts"][fulfilled["artifact"]["id"]].update(
+                locator=" evidence/opportunity-brief.md "
+            ),
+            lambda state: state["assignments"][fulfilled["assignment"]["id"]].update(
+                status="unknown"
+            ),
+            lambda state: state["transition_proposals"][proposal["id"]]["gate"].update(
+                minimum_approvals=True
+            ),
+            lambda state: state["risk_decisions"][decision["id"]].update(
+                decision="deferred"
+            ),
+        )
+        for mutate in cases:
+            with self.subTest(mutate=mutate):
+                state = copy.deepcopy(base)
+                mutate(state)
+                with self.assertRaises(ValidationError):
+                    validate_state(state)
+
+    def test_state_references_must_resolve(self) -> None:
+        fulfilled = self.fulfill_current_stage()
+        proposal = self.propose_current_transition(
+            evidence_ids=[fulfilled["artifact"]["id"]]
+        )
+        state = self.repository.load()
+        state["artifacts"][fulfilled["artifact"]["id"]][
+            "assignment_id"
+        ] = "work_missing"
+        with self.assertRaises(ValidationError):
+            validate_state(state)
+
+        state = self.repository.load()
+        state["transition_proposals"][proposal["id"]]["evidence_ids"] = [
+            "artifact_missing"
+        ]
+        with self.assertRaises(ValidationError):
+            validate_state(state)
 
 
 class PolicyValidationEdgeTests(WorkspaceTestCase):
@@ -241,6 +321,35 @@ class ServiceValidationEdgeTests(GovernedProjectTestCase):
                 digest=sha256_digest(b"slash"),
                 locator="evidence\\brief.md",
             )
+
+    def test_artifact_locator_rejects_ambiguous_and_control_paths(self) -> None:
+        invalid = (
+            ".",
+            "./",
+            "evidence/.",
+            "evidence//brief.md",
+            "evidence/\nbrief.md",
+            "evidence/\x00brief.md",
+        )
+        for locator in invalid:
+            with self.subTest(locator=locator):
+                with self.assertRaises(ValidationError):
+                    self.service.register_artifact(
+                        actor=self.owner,
+                        artifact_type="opportunity_brief",
+                        title="Invalid locator",
+                        digest=sha256_digest(locator.encode()),
+                        locator=locator,
+                    )
+
+        artifact = self.service.register_artifact(
+            actor=self.owner,
+            artifact_type="opportunity_brief",
+            title="Portable locator",
+            digest=sha256_digest(b"portable locator"),
+            locator="evidence/brief.md",
+        )["artifact"]
+        self.assertEqual(artifact["locator"], "evidence/brief.md")
 
     def test_work_deliverables_require_nonempty_unique_types(self) -> None:
         with self.assertRaises(ValidationError):
@@ -401,7 +510,7 @@ class PersistenceValidationEdgeTests(WorkspaceTestCase):
         repository = JsonProjectRepository(path)
         repository._prepare_root(create=True)
         repository._atomic_write_json(repository.policy_path, default_policy())
-        from aidlc.service import LifecycleService
+        from aidlc_engine.service import LifecycleService
 
         state = LifecycleService(repository).initialize(
             name="Recovered initialization",

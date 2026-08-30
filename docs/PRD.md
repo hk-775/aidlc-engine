@@ -2,7 +2,7 @@
 
 ## Product
 
-AIDLC: AI Development Lifecycle.
+AI-DLC Engine: human-governed automation for the AI Development Lifecycle.
 
 ## Status
 
@@ -17,9 +17,9 @@ that a person accepted the impact of a lifecycle transition.
 
 ## Product statement
 
-AIDLC is a human-governed control plane that records agent work, evidence,
-transition proposals, independent approvals, and a locally verifiable audit
-sequence without granting agents delivery authority.
+AI-DLC Engine automates lifecycle state, evidence requirements, bounded agent
+work, transition proposals, independent approvals, and a locally verifiable
+audit sequence without granting agents delivery authority.
 
 ## Users
 

@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import copy
 
-from aidlc.errors import AuthorizationError, ForbiddenOperationError
-from aidlc.models import HARD_DENIED_AGENT_OPERATIONS, Actor
-from aidlc.persistence import JsonProjectRepository
-from aidlc.policy import default_policy
-from aidlc.service import LifecycleService
+from aidlc_engine.errors import AuthorizationError, ForbiddenOperationError
+from aidlc_engine.models import HARD_DENIED_AGENT_OPERATIONS, Actor
+from aidlc_engine.persistence import JsonProjectRepository
+from aidlc_engine.policy import default_policy
+from aidlc_engine.service import LifecycleService
 from tests.support import GovernedProjectTestCase, WorkspaceTestCase
 
 

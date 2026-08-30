@@ -1,15 +1,15 @@
 # Support
 
-AIDLC is a community open-source alpha project with no paid support, uptime
+AI-DLC Engine is a community open-source alpha project with no paid support, uptime
 commitment, response guarantee, or production service.
 
 ## Where to ask
 
 - Use the
-  [question form](https://github.com/hk-775/aidlc/issues/new?template=question.yml)
+  [question form](https://github.com/hk-775/aidlc-engine/issues/new?template=question.yml)
   for reproducible, non-sensitive usage questions.
 - Use the
-  [bug form](https://github.com/hk-775/aidlc/issues/new?template=bug.yml)
+  [bug form](https://github.com/hk-775/aidlc-engine/issues/new?template=bug.yml)
   for incorrect behavior.
 - Use private vulnerability reporting as described in
   [SECURITY.md](SECURITY.md).

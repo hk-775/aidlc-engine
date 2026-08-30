@@ -3,11 +3,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from aidlc.audit import validate_event
-from aidlc.demo import run_demo
-from aidlc.models import HARD_DENIED_AGENT_OPERATIONS, STAGES, validate_state
-from aidlc.policy import validate_policy
-from aidlc.persistence import JsonProjectRepository
+from aidlc_engine.audit import validate_event
+from aidlc_engine.demo import run_demo
+from aidlc_engine.models import HARD_DENIED_AGENT_OPERATIONS, STAGES, validate_state
+from aidlc_engine.policy import validate_policy
+from aidlc_engine.persistence import JsonProjectRepository
 from tests.support import ROOT, WorkspaceTestCase
 
 
@@ -25,7 +25,7 @@ class SchemaAndFixtureTests(WorkspaceTestCase):
             with self.subTest(name=name):
                 schema = self.load_schema(name)
                 self.assertEqual(schema["type"], "object")
-                self.assertTrue(str(schema["$id"]).startswith("urn:aidlc:"))
+                self.assertTrue(str(schema["$id"]).startswith("urn:aidlc-engine:"))
 
     def test_schema_references_are_local_fragments(self) -> None:
         for path in sorted((ROOT / "schemas").glob("*.json")):
@@ -88,6 +88,17 @@ class SchemaAndFixtureTests(WorkspaceTestCase):
             schema["properties"]["state_digest"]["$ref"],
             "#/$defs/hash",
         )
+
+    def test_nested_state_and_actor_schemas_reject_extra_fields(self) -> None:
+        state_schema = self.load_schema("project-state.schema.json")
+        for name in ("artifact", "assignment", "proposal", "riskDecision", "approval"):
+            with self.subTest(name=name):
+                self.assertIs(state_schema["$defs"][name]["additionalProperties"], False)
+
+        audit_schema = self.load_schema("audit-event.schema.json")
+        actor = audit_schema["properties"]["actor"]
+        self.assertIs(actor["additionalProperties"], False)
+        self.assertEqual(actor["properties"]["roles"]["maxItems"], 20)
 
     def test_evidence_fixtures_are_synthetic_markdown(self) -> None:
         fixtures = sorted((ROOT / "examples" / "evidence").glob("*.md"))

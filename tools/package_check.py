@@ -24,7 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def main() -> int:
     temporary_root = ROOT / ".tmp"
     temporary_root.mkdir(exist_ok=True)
-    egg_info = ROOT / "src" / "aidlc_control_plane.egg-info"
+    egg_info = ROOT / "src" / "aidlc_engine.egg-info"
     result: dict[str, object] = {
         "ok": False,
         "build_command": "python -m build --no-isolation",
@@ -70,9 +70,9 @@ def main() -> int:
                     with tarfile.open(archive, "r:gz") as package:
                         source_members = sorted(package.getnames())
             required_wheel_suffixes = {
-                "aidlc/__init__.py",
-                "aidlc/cli.py",
-                "aidlc/service.py",
+                "aidlc_engine/__init__.py",
+                "aidlc_engine/cli.py",
+                "aidlc_engine/service.py",
             }
             wheel_ok = all(
                 any(member.endswith(suffix) for member in wheel_members)
@@ -85,6 +85,7 @@ def main() -> int:
                 "/README.md",
                 "/docs/ARCHITECTURE.md",
                 "/docs/RELEASE_PROCESS.md",
+                "/requirements-build.lock",
                 "/schemas/policy.schema.json",
                 "/site/index.html",
                 "/tests/test_lifecycle.py",
