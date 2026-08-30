@@ -1,6 +1,6 @@
 # Release checklist
 
-This checklist coordinates a source release. Completing it does not make AIDLC
+This checklist coordinates a source release. Completing it does not make AI-DLC Engine
 production ready.
 
 ## Scope and governance
@@ -38,6 +38,7 @@ production ready.
 - [ ] Credential scan passes.
 - [ ] Reachable Git history scan passes.
 - [ ] Workflow actions are pinned to full commit identifiers.
+- [ ] Build and coverage tools install from the reviewed hash lock.
 - [ ] gitleaks runs successfully, or unavailability is disclosed.
 - [ ] Synthetic demo reaches expected counts and valid audit state.
 - [ ] Package source and wheel build in temporary storage.
@@ -60,7 +61,8 @@ production ready.
 - [ ] Repository URLs, owners, and reporting contacts are configured.
 - [ ] Logo and icon render at intended sizes.
 - [ ] Launch copy avoids unsupported claims.
-- [ ] Pages deployment is manually approved.
+- [ ] Pages deployment is manually started from `main`.
+- [ ] The `github-pages` environment has required reviewers before launch.
 - [ ] Release tag is annotated and matches both package version declarations.
 - [ ] Release workflow produces exactly one source archive and one wheel.
 - [ ] Tag, source archive, and package digests are recorded.

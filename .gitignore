@@ -21,12 +21,16 @@ dist/
 *.tar.gz
 *.zip
 
-# Local AIDLC state and demo output
+# Local AI-DLC Engine state and demo output
+.aidlc-engine/
+.aidlc-engine-*/
+# Legacy v1 store paths remain ignored for compatibility.
 .aidlc/
 .aidlc-*/
 demo-data/
 local-data/
 *.lock
+!requirements-build.lock
 !requirements.lock
 *.pending.json
 

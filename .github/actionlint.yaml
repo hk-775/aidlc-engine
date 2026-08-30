@@ -1,3 +1,3 @@
-# AIDLC uses only GitHub-hosted runners.
+# AI-DLC Engine uses only GitHub-hosted runners.
 self-hosted-runner:
   labels: []

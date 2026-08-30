@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from aidlc.audit import canonical_bytes
-from aidlc.models import Actor
-from aidlc.persistence import JsonProjectRepository
-from aidlc.service import LifecycleService
-from aidlc.values import DeterministicValueProvider, ValueProvider
+from aidlc_engine.audit import canonical_bytes
+from aidlc_engine.models import Actor
+from aidlc_engine.persistence import JsonProjectRepository
+from aidlc_engine.service import LifecycleService
+from aidlc_engine.values import DeterministicValueProvider, ValueProvider
 from tests.support import WorkspaceTestCase
 
 

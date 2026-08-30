@@ -27,7 +27,7 @@ transition when that policy control is enabled.
 
 ## Feature: evidence registration
 
-Artifact content remains outside AIDLC. The registry records:
+Artifact content remains outside AI-DLC Engine. The registry records:
 
 - synthetic identifier;
 - current lifecycle stage;
@@ -46,7 +46,7 @@ that identity is still only an assertion from the local caller.
 ## Feature: transition proposal
 
 1. The caller requests the next adjacent stage.
-2. AIDLC rejects terminal, skipped, or concurrent proposals.
+2. AI-DLC Engine rejects terminal, skipped, or concurrent proposals.
 3. The proposal must reference current-stage evidence.
 4. Referenced artifacts must cover every policy-required type.
 5. Open assignments are checked.
@@ -59,7 +59,7 @@ Agents and humans can propose, subject to policy. Proposal is never approval.
 For a transition without a named role gate:
 
 1. a human other than the proposer approves;
-2. AIDLC rechecks evidence and open assignments; and
+2. AI-DLC Engine rechecks evidence and open assignments; and
 3. the same transaction records approval and changes the stage.
 
 ## Feature: high-impact gate
@@ -108,7 +108,7 @@ Timestamps increment by one microsecond per audit event.
 
 ## Feature: recovery
 
-Before committing an event and state snapshot, AIDLC atomically stores the pair
+Before committing an event and state snapshot, AI-DLC Engine atomically stores the pair
 as a pending transaction. A later operation completes that exact pair after an
 interruption. Invalid pending data is not guessed or discarded.
 

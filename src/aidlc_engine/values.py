@@ -7,7 +7,7 @@ import secrets
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 
-from aidlc.errors import ValidationError
+from aidlc_engine.errors import ValidationError
 
 
 def format_timestamp(value: datetime) -> str:

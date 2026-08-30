@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from aidlc.errors import AuthorizationError, ConflictError, ValidationError
-from aidlc.service import sha256_digest
+from aidlc_engine.errors import AuthorizationError, ConflictError, ValidationError
+from aidlc_engine.service import sha256_digest
 from tests.support import GovernedProjectTestCase
 
 

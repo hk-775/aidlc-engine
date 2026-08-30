@@ -11,11 +11,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from aidlc.demo import run_demo  # noqa: E402
-from aidlc.errors import ForbiddenOperationError  # noqa: E402
-from aidlc.models import Actor  # noqa: E402
-from aidlc.persistence import JsonProjectRepository  # noqa: E402
-from aidlc.service import LifecycleService  # noqa: E402
+from aidlc_engine.demo import run_demo  # noqa: E402
+from aidlc_engine.errors import ForbiddenOperationError  # noqa: E402
+from aidlc_engine.models import Actor  # noqa: E402
+from aidlc_engine.persistence import JsonProjectRepository  # noqa: E402
+from aidlc_engine.service import LifecycleService  # noqa: E402
 
 
 def main() -> int:

@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Iterator
 
-from aidlc.audit import (
+from aidlc_engine.audit import (
     GENESIS_HASH,
     build_event,
     canonical_bytes,
@@ -21,10 +21,10 @@ from aidlc.audit import (
     state_digest,
     verify_event,
 )
-from aidlc.errors import ConflictError, IntegrityError, NotFoundError, PersistenceError
-from aidlc.models import Actor, validate_state, validate_text
-from aidlc.policy import validate_policy
-from aidlc.values import OperationValues, ValueProvider
+from aidlc_engine.errors import ConflictError, IntegrityError, NotFoundError, PersistenceError
+from aidlc_engine.models import Actor, validate_state, validate_text
+from aidlc_engine.policy import validate_policy
+from aidlc_engine.values import OperationValues, ValueProvider
 
 EVENT_FILENAME_PATTERN = re.compile(r"^(\d{8})-([a-z][a-z0-9_-]{1,63})\.json$")
 
@@ -56,7 +56,12 @@ class JsonProjectRepository:
 
     @staticmethod
     def _fsync_directory(path: Path) -> None:
-        descriptor = os.open(path, os.O_RDONLY)
+        flags = os.O_RDONLY
+        if hasattr(os, "O_DIRECTORY"):
+            flags |= os.O_DIRECTORY
+        if hasattr(os, "O_NOFOLLOW"):
+            flags |= os.O_NOFOLLOW
+        descriptor = os.open(path, flags)
         try:
             os.fsync(descriptor)
         finally:
@@ -71,9 +76,35 @@ class JsonProjectRepository:
                 details={"path": str(path)},
             )
 
+    @staticmethod
+    def _secure_directory(path: Path) -> None:
+        flags = os.O_RDONLY
+        if hasattr(os, "O_DIRECTORY"):
+            flags |= os.O_DIRECTORY
+        if hasattr(os, "O_NOFOLLOW"):
+            flags |= os.O_NOFOLLOW
+        descriptor = -1
+        try:
+            descriptor = os.open(path, flags)
+            metadata = os.fstat(descriptor)
+            if not stat.S_ISDIR(metadata.st_mode):
+                raise PersistenceError(
+                    "project storage path is not a directory",
+                    details={"path": str(path)},
+                )
+            os.fchmod(descriptor, 0o700)
+        except OSError as error:
+            raise PersistenceError(
+                "project storage directory permissions could not be secured",
+                details={"path": str(path), "reason": str(error)},
+            ) from error
+        finally:
+            if descriptor >= 0:
+                os.close(descriptor)
+
     def _prepare_root(self, *, create: bool) -> None:
+        self._reject_symlink(self.root)
         if self.root.exists():
-            self._reject_symlink(self.root)
             if not self.root.is_dir():
                 raise PersistenceError("project storage path is not a directory")
         elif not create:
@@ -83,6 +114,8 @@ class JsonProjectRepository:
             )
         else:
             self.root.mkdir(parents=True, mode=0o700)
+        self._secure_directory(self.root)
+        self._reject_symlink(self.audit_dir)
         if create:
             self.audit_dir.mkdir(mode=0o700, exist_ok=True)
         elif not self.audit_dir.is_dir():
@@ -90,14 +123,39 @@ class JsonProjectRepository:
                 "project audit directory is missing",
                 details={"path": str(self.audit_dir)},
             )
-        self._reject_symlink(self.audit_dir)
+        self._secure_directory(self.audit_dir)
 
     @contextmanager
     def _locked(self, *, create: bool = False) -> Iterator[None]:
         self._prepare_root(create=create)
         self._reject_symlink(self.lock_path)
-        with self.lock_path.open("a+b") as lock_file:
-            os.chmod(self.lock_path, 0o600)
+        flags = os.O_RDWR | os.O_CREAT | os.O_APPEND
+        if hasattr(os, "O_NOFOLLOW"):
+            flags |= os.O_NOFOLLOW
+        if hasattr(os, "O_NONBLOCK"):
+            flags |= os.O_NONBLOCK
+        descriptor = -1
+        try:
+            descriptor = os.open(self.lock_path, flags, 0o600)
+            metadata = os.fstat(descriptor)
+            if not stat.S_ISREG(metadata.st_mode):
+                raise PersistenceError(
+                    "project lock path is not a regular file",
+                    details={"path": str(self.lock_path)},
+                )
+            os.fchmod(descriptor, 0o600)
+        except OSError as error:
+            if descriptor >= 0:
+                os.close(descriptor)
+            raise PersistenceError(
+                "project lock file could not be opened safely",
+                details={"path": str(self.lock_path), "reason": str(error)},
+            ) from error
+        except Exception:
+            if descriptor >= 0:
+                os.close(descriptor)
+            raise
+        with os.fdopen(descriptor, "a+b") as lock_file:
             fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
             try:
                 yield
@@ -106,8 +164,22 @@ class JsonProjectRepository:
 
     def _read_json(self, path: Path) -> dict[str, Any]:
         self._reject_symlink(path)
+        descriptor = -1
         try:
-            with path.open("r", encoding="utf-8") as handle:
+            flags = os.O_RDONLY
+            if hasattr(os, "O_NOFOLLOW"):
+                flags |= os.O_NOFOLLOW
+            if hasattr(os, "O_NONBLOCK"):
+                flags |= os.O_NONBLOCK
+            descriptor = os.open(path, flags)
+            metadata = os.fstat(descriptor)
+            if not stat.S_ISREG(metadata.st_mode):
+                raise PersistenceError(
+                    "project JSON path is not a regular file",
+                    details={"path": str(path)},
+                )
+            with os.fdopen(descriptor, "r", encoding="utf-8") as handle:
+                descriptor = -1
                 value = json.load(handle)
         except FileNotFoundError as error:
             raise NotFoundError(
@@ -119,6 +191,9 @@ class JsonProjectRepository:
                 "project JSON could not be read",
                 details={"path": str(path), "reason": str(error)},
             ) from error
+        finally:
+            if descriptor >= 0:
+                os.close(descriptor)
         if not isinstance(value, dict):
             raise PersistenceError(
                 "project JSON root must be an object",
@@ -132,6 +207,7 @@ class JsonProjectRepository:
         flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
         descriptor = os.open(temporary_path, flags, 0o600)
         try:
+            os.fchmod(descriptor, 0o600)
             data = canonical_bytes(value) + b"\n"
             with os.fdopen(descriptor, "wb", closefd=False) as handle:
                 handle.write(data)
@@ -170,13 +246,15 @@ class JsonProjectRepository:
         flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
         if hasattr(os, "O_NOFOLLOW"):
             flags |= os.O_NOFOLLOW
+        descriptor = -1
         try:
             descriptor = os.open(event_path, flags, 0o400)
+            os.fchmod(descriptor, stat.S_IRUSR)
             with os.fdopen(descriptor, "wb") as handle:
+                descriptor = -1
                 handle.write(canonical_bytes(event) + b"\n")
                 handle.flush()
                 os.fsync(handle.fileno())
-            os.chmod(event_path, stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
             self._fsync_directory(self.audit_dir)
         except FileExistsError:
             existing = self._read_json(event_path)
@@ -190,6 +268,9 @@ class JsonProjectRepository:
                 "audit event append failed",
                 details={"path": str(event_path), "reason": str(error)},
             ) from error
+        finally:
+            if descriptor >= 0:
+                os.close(descriptor)
 
     def _finish_pending(self) -> None:
         if not self.pending_path.exists():
@@ -246,7 +327,7 @@ class JsonProjectRepository:
         policy: dict[str, Any],
     ) -> dict[str, Any]:
         if creator.kind != "human":
-            from aidlc.errors import AuthorizationError
+            from aidlc_engine.errors import AuthorizationError
 
             raise AuthorizationError(
                 "only a human can initialize a governed project",
@@ -378,12 +459,12 @@ class JsonProjectRepository:
         for path in self.audit_dir.iterdir():
             if path.name.startswith("."):
                 continue
+            self._reject_symlink(path)
             if not path.is_file() or not EVENT_FILENAME_PATTERN.fullmatch(path.name):
                 raise IntegrityError(
                     "unexpected content exists in the audit directory",
                     details={"path": str(path)},
                 )
-            self._reject_symlink(path)
             files.append(path)
         return sorted(files)
 
@@ -401,7 +482,11 @@ class JsonProjectRepository:
             )
         for expected_sequence, path in enumerate(files, start=1):
             match = EVENT_FILENAME_PATTERN.fullmatch(path.name)
-            assert match is not None
+            if match is None:
+                raise IntegrityError(
+                    "audit event filename is invalid",
+                    details={"path": str(path)},
+                )
             event = self._read_json(path)
             if int(match.group(1)) != expected_sequence:
                 raise IntegrityError(

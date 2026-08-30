@@ -3,6 +3,7 @@ from __future__ import annotations
 import contextlib
 import io
 import json
+import tomllib
 import xml.etree.ElementTree as ET
 from html.parser import HTMLParser
 from pathlib import Path
@@ -181,6 +182,40 @@ class RepositoryHygieneTests(WorkspaceTestCase):
         ]
         self.assertEqual(lines, [])
 
+    def test_build_toolchain_lock_is_hashed_and_exact(self) -> None:
+        text = (ROOT / "requirements-build.lock").read_text(encoding="utf-8")
+        for requirement in (
+            "build==1.3.0",
+            "coverage==7.13.4",
+            "packaging==26.3",
+            "pyproject-hooks==1.2.0",
+            "setuptools==84.0.0",
+            "wheel==0.48.0",
+        ):
+            self.assertIn(requirement, text)
+        self.assertGreaterEqual(text.count("--hash=sha256:"), 12)
+
+        pyproject = tomllib.loads(
+            (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            pyproject["build-system"]["requires"],
+            ["setuptools==84.0.0"],
+        )
+
+    def test_pages_deployment_is_manual_main_only_and_permission_scoped(self) -> None:
+        text = (ROOT / ".github" / "workflows" / "pages.yml").read_text(
+            encoding="utf-8"
+        )
+        trigger_block, jobs_block = text.split("jobs:", 1)
+        self.assertNotIn("\n  push:", trigger_block)
+        self.assertNotIn("pages: write", trigger_block)
+        self.assertNotIn("id-token: write", trigger_block)
+        self.assertIn("github.ref == 'refs/heads/main'", jobs_block)
+        self.assertIn("ref: refs/heads/main", jobs_block)
+        self.assertIn("pages: write", jobs_block)
+        self.assertIn("id-token: write", jobs_block)
+
 
 class StaticSiteTests(WorkspaceTestCase):
     def setUp(self) -> None:
@@ -198,6 +233,8 @@ class StaticSiteTests(WorkspaceTestCase):
         self.assertIn("main", tags)
         self.assertIn("footer", tags)
         self.assertIn("h1", tags)
+        self.assertIn("Automate the framework. Keep authority human.", self.index_text)
+        self.assertIn("AI Development Lifecycle automation", self.index_text)
 
     def test_skip_link_targets_main_content(self) -> None:
         anchors = [attrs for tag, attrs in self.parser.tags if tag == "a"]
@@ -241,11 +278,11 @@ class StaticSiteTests(WorkspaceTestCase):
         canonical = next(
             attrs for attrs in links if "canonical" in (attrs.get("rel") or "").split()
         )
-        self.assertEqual(canonical.get("href"), "https://hk-775.github.io/aidlc/")
+        self.assertEqual(canonical.get("href"), "https://hk-775.github.io/aidlc-engine/")
         anchors = [attrs for tag, attrs in self.parser.tags if tag == "a"]
         self.assertTrue(
             any(
-                attrs.get("href") == "https://github.com/hk-775/aidlc"
+                attrs.get("href") == "https://github.com/hk-775/aidlc-engine"
                 for attrs in anchors
             )
         )
@@ -257,7 +294,7 @@ class StaticSiteTests(WorkspaceTestCase):
         self.assertNotIn("fetch(", script)
 
     def test_svg_assets_are_well_formed_and_described(self) -> None:
-        for name in ("aidlc-logo.svg", "aidlc-icon.svg", "architecture.svg"):
+        for name in ("aidlc-engine-logo.svg", "aidlc-engine-icon.svg", "architecture.svg"):
             with self.subTest(name=name):
                 root = ET.parse(ROOT / "site" / "assets" / name).getroot()
                 children = list(root)

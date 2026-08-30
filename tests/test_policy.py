@@ -3,9 +3,9 @@ from __future__ import annotations
 import copy
 import unittest
 
-from aidlc.errors import ValidationError
-from aidlc.models import Actor, STAGES, next_stage, validate_stage
-from aidlc.policy import default_policy, validate_policy
+from aidlc_engine.errors import ValidationError
+from aidlc_engine.models import Actor, STAGES, next_stage, validate_stage
+from aidlc_engine.policy import default_policy, validate_policy
 
 
 class PolicyValidationTests(unittest.TestCase):

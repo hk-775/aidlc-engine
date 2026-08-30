@@ -2,7 +2,7 @@
 
 ## Intended use
 
-AIDLC is intended for local evaluation of human-governed agent-assisted
+AI-DLC Engine is intended for local evaluation of human-governed agent-assisted
 delivery workflows using synthetic or low-sensitivity material.
 
 Suitable experiments include:
@@ -24,7 +24,7 @@ A lifecycle gate is not a substitute for judgment. Human approvers should:
 - reject unclear or incomplete work; and
 - avoid approving under time or automation pressure.
 
-AIDLC records an asserted approval. It does not prove that the review was
+AI-DLC Engine records an asserted approval. It does not prove that the review was
 competent, independent in the real world, or legally sufficient.
 
 ## Agent boundaries

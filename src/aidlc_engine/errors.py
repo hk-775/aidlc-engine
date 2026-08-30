@@ -5,10 +5,10 @@ from __future__ import annotations
 from typing import Any
 
 
-class AIDLCError(Exception):
+class AIDLCEngineError(Exception):
     """Base class with a stable machine-readable code and details."""
 
-    code = "aidlc_error"
+    code = "aidlc_engine_error"
     exit_code = 1
 
     def __init__(
@@ -31,12 +31,12 @@ class AIDLCError(Exception):
         }
 
 
-class ValidationError(AIDLCError):
+class ValidationError(AIDLCEngineError):
     code = "validation_error"
     exit_code = 2
 
 
-class AuthorizationError(AIDLCError):
+class AuthorizationError(AIDLCEngineError):
     code = "authorization_error"
     exit_code = 3
 
@@ -45,21 +45,21 @@ class ForbiddenOperationError(AuthorizationError):
     code = "forbidden_operation"
 
 
-class IntegrityError(AIDLCError):
+class IntegrityError(AIDLCEngineError):
     code = "integrity_error"
     exit_code = 4
 
 
-class NotFoundError(AIDLCError):
+class NotFoundError(AIDLCEngineError):
     code = "not_found"
     exit_code = 5
 
 
-class ConflictError(AIDLCError):
+class ConflictError(AIDLCEngineError):
     code = "conflict"
     exit_code = 6
 
 
-class PersistenceError(AIDLCError):
+class PersistenceError(AIDLCEngineError):
     code = "persistence_error"
     exit_code = 7

@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
-  <title id="title">AIDLC local architecture</title>
+  <title id="title">AI-DLC Engine local automation architecture</title>
   <desc id="desc">
     Human and agent callers use a command line and service layer. Policy
     validation bounds the lifecycle core, which writes atomic JSON state and

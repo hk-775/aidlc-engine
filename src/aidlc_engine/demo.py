@@ -6,16 +6,16 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from aidlc.models import Actor, STAGES
-from aidlc.persistence import JsonProjectRepository
-from aidlc.policy import default_policy
-from aidlc.service import LifecycleService, sha256_digest
-from aidlc.values import DeterministicValueProvider
+from aidlc_engine.models import Actor, STAGES
+from aidlc_engine.persistence import JsonProjectRepository
+from aidlc_engine.policy import default_policy
+from aidlc_engine.service import LifecycleService, sha256_digest
+from aidlc_engine.values import DeterministicValueProvider
 
 
 def run_demo(store: str | Path) -> dict[str, Any]:
     provider = DeterministicValueProvider(
-        seed="aidlc-synthetic-demo-v1",
+        seed="aidlc-engine-synthetic-demo-v1",
         base_time=datetime(2026, 1, 15, 12, 0, tzinfo=timezone.utc),
     )
     repository = JsonProjectRepository(store, provider)

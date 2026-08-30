@@ -2,13 +2,14 @@
 
 ## Purpose
 
-Operate and troubleshoot one AIDLC project store during local evaluation.
+Operate and troubleshoot one AI-DLC Engine project store during local
+evaluation.
 
 ## Start a project
 
 ```console
-PYTHONPATH=src python3 -m aidlc \
-  --store .aidlc-evaluation \
+PYTHONPATH=src python3 -m aidlc_engine \
+  --store .aidlc-engine-evaluation \
   init \
   --name "Evaluation project" \
   --description "Synthetic local run" \
@@ -17,20 +18,21 @@ PYTHONPATH=src python3 -m aidlc \
   --role project_owner
 ```
 
-Protect the directory with host filesystem permissions. Do not run as an
-administrator.
+AI-DLC Engine normalizes the project and audit directories to mode `0700`,
+state and policy files to `0600`, and new audit events to `0400`. Keep every
+ancestor directory user-owned and restrictive. Do not run as an administrator.
 
 ## Routine checks
 
 Before and after a workflow session:
 
 ```console
-PYTHONPATH=src python3 -m aidlc \
-  --store .aidlc-evaluation \
+PYTHONPATH=src python3 -m aidlc_engine \
+  --store .aidlc-engine-evaluation \
   verify-audit
 
-PYTHONPATH=src python3 -m aidlc \
-  --store .aidlc-evaluation \
+PYTHONPATH=src python3 -m aidlc_engine \
+  --store .aidlc-engine-evaluation \
   status
 ```
 
@@ -40,7 +42,7 @@ investigation before attempting manual repair.
 ## Expected files
 
 ```text
-.aidlc-evaluation/
+.aidlc-engine-evaluation/
   .aidlc.lock
   audit/
   policy.json
@@ -49,6 +51,9 @@ investigation before attempting manual repair.
 
 A `.aidlc.pending.json` file indicates an interrupted transaction. The next
 normal read or mutation attempts validated completion. Do not edit it.
+The `.aidlc.lock` and `.aidlc.pending.json` names are part of the v1 on-disk
+format and intentionally retain their legacy spelling. Existing stores remain
+readable when their path is supplied explicitly, such as `--store .aidlc`.
 
 ## Common failures
 
@@ -82,13 +87,13 @@ Record:
 ### `persistence_error`
 
 Check permissions, free space, path type, symbolic links, and filesystem
-health. AIDLC rejects symbolic links for key storage paths.
+health. AI-DLC Engine rejects symbolic links for key storage paths.
 
 ## Safe backup for evaluation
 
 There is no online backup command. For an offline evaluation copy:
 
-1. stop all AIDLC processes using the store;
+1. stop all AI-DLC Engine processes using the store;
 2. run `verify-audit`;
 3. copy the complete directory with metadata preserved;
 4. verify the copied directory separately; and
@@ -101,7 +106,7 @@ This is not a production backup strategy and does not prevent rollback.
 Restore only into a new empty directory, then run:
 
 ```console
-PYTHONPATH=src python3 -m aidlc \
+PYTHONPATH=src python3 -m aidlc_engine \
   --store PATH_TO_RESTORED_COPY \
   verify-audit
 ```

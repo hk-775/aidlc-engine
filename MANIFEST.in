@@ -17,6 +17,7 @@ include STARTUP.md
 include SUPPORT.md
 include THIRD_PARTY_NOTICES.md
 include launch-materials.md
+include requirements-build.lock
 include requirements.lock
 recursive-include .github *
 recursive-include docs *.md

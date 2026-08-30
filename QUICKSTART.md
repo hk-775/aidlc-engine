@@ -1,7 +1,7 @@
-# AIDLC quickstart
+# AI-DLC Engine quickstart
 
-This guide runs AIDLC locally without installing runtime dependencies or
-contacting a network service.
+This guide runs AI-DLC Engine locally without installing runtime dependencies
+or contacting a network service.
 
 ## 1. Check the environment
 
@@ -15,7 +15,7 @@ locking.
 ## 2. Run the complete synthetic demo
 
 ```console
-PYTHONPATH=src python3 -m aidlc --store .tmp/quickstart-demo demo
+PYTHONPATH=src python3 -m aidlc_engine --store .tmp/quickstart-demo demo
 ```
 
 Expected summary values:
@@ -31,15 +31,15 @@ deployment, publication, or production operation occurs.
 ## 3. Verify and inspect the store
 
 ```console
-PYTHONPATH=src python3 -m aidlc \
+PYTHONPATH=src python3 -m aidlc_engine \
   --store .tmp/quickstart-demo \
   verify-audit
 
-PYTHONPATH=src python3 -m aidlc \
+PYTHONPATH=src python3 -m aidlc_engine \
   --store .tmp/quickstart-demo \
   status
 
-PYTHONPATH=src python3 -m aidlc \
+PYTHONPATH=src python3 -m aidlc_engine \
   --store .tmp/quickstart-demo \
   events
 ```
@@ -50,7 +50,7 @@ head hash.
 ## 4. Observe a denied agent action
 
 ```console
-PYTHONPATH=src python3 -m aidlc \
+PYTHONPATH=src python3 -m aidlc_engine \
   --store .tmp/quickstart-demo \
   guard-operation \
   --actor-id agent_builder \
@@ -64,7 +64,7 @@ files cannot enable that operation for agents.
 ## 5. Validate a stricter policy
 
 ```console
-PYTHONPATH=src python3 -m aidlc \
+PYTHONPATH=src python3 -m aidlc_engine \
   validate-policy \
   --file examples/policy.strict.json
 ```
@@ -75,7 +75,7 @@ safety controls.
 ## 6. Initialize a separate project
 
 ```console
-PYTHONPATH=src python3 -m aidlc \
+PYTHONPATH=src python3 -m aidlc_engine \
   --store .tmp/manual-project \
   --id-seed manual-example \
   --fixed-time 2026-01-20T09:00:00Z \
@@ -89,8 +89,9 @@ PYTHONPATH=src python3 -m aidlc \
 
 Continue with `propose-work`, `approve-work`, `add-artifact`,
 `complete-work`, `propose-transition`, and `approve-transition`. Use
-`python3 -m aidlc <command> --help` for command-specific fields. Copy generated
-assignment, artifact, and proposal identifiers from each JSON result.
+`python3 -m aidlc_engine <command> --help` for command-specific fields. Copy
+generated assignment, artifact, and proposal identifiers from each JSON
+result.
 
 ## 7. Run repository checks
 

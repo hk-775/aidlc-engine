@@ -1,4 +1,4 @@
-# AIDLC governance
+# AI-DLC Engine governance
 
 This document describes the intended governance model for an independent
 open-source project. The GitHub account `@hk-775` is the bootstrap repository

@@ -2,7 +2,7 @@
 
 ## Our commitment
 
-We commit to making participation in AIDLC respectful, welcoming, and
+We commit to making participation in AI-DLC Engine respectful, welcoming, and
 productive for people of varied backgrounds, identities, abilities,
 experiences, and viewpoints.
 

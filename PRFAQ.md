@@ -1,17 +1,18 @@
-# AIDLC PRFAQ
+# AI-DLC Engine PRFAQ
 
 Draft product narrative for discussion. It is not a launch commitment.
 
 ## Press release
 
-### AIDLC introduces a human-governed lifecycle for agent-assisted delivery
+### AI-DLC Engine automates the AI Development Lifecycle while keeping authority human
 
 Software teams evaluating coding agents often face a control problem: useful
 agent work arrives faster than the evidence and decisions needed to govern it.
-AIDLC is an open-source control plane that separates proposal from
-authority. Agents can prepare assigned work and propose the next lifecycle
-stage. People approve transitions, represent required review roles, and retain
-risk and release decisions.
+AI-DLC Engine is an open-source automation engine that separates proposal from
+authority. It automates lifecycle state, evidence requirements, bounded work,
+approval gates, and audit records. Agents can prepare assigned work and
+propose the next lifecycle stage. People approve transitions, represent
+required review roles, and retain risk and release decisions.
 
 The first alpha release focuses on inspectability. Its standard-library Python
 core runs on one local host, stores JSON, applies deterministic policies, and
@@ -24,7 +25,7 @@ verification without sharing data or configuring external services.
 
 ## Frequently asked questions
 
-### What problem does AIDLC solve?
+### What problem does AI-DLC Engine solve?
 
 It provides a small governance state machine around agent-assisted software
 work. The system records what was assigned, what evidence was submitted, who
@@ -33,8 +34,8 @@ intact.
 
 ### Is this an autonomous delivery platform?
 
-No. AIDLC intentionally does not merge, deploy, publish, or operate production
-systems. It records bounded workflow decisions.
+No. AI-DLC Engine intentionally does not merge, deploy, publish, or operate
+production systems. It records bounded workflow decisions.
 
 ### Can an agent approve its own proposal?
 
@@ -47,7 +48,7 @@ coverage.
 No. Configurations that grant hard-denied agent powers, remove required gates,
 or disable independent human approval are invalid.
 
-### What evidence does AIDLC store?
+### What evidence does AI-DLC Engine store?
 
 It stores artifact metadata, a SHA-256 digest, an optional safe relative
 locator, the submitting actor, and the related assignment. It does not copy or

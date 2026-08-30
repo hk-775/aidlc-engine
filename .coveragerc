@@ -1,6 +1,6 @@
 [run]
 branch = True
-source = aidlc
+source = aidlc_engine
 
 [report]
 exclude_also =

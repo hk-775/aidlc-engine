@@ -5,6 +5,14 @@ principles of Keep a Changelog, and versions use semantic versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- Rename the project from AIDLC to AI-DLC Engine, including the `aidlc-engine`
+  distribution and CLI, `aidlc_engine` Python package, project site, and
+  repository metadata.
+- Use `.aidlc-engine` as the default local store while retaining the v1
+  `.aidlc.lock` and `.aidlc.pending.json` filenames for store compatibility.
+
 ### Added
 
 - Canonical repository, documentation, issue, security, and project-site
@@ -13,8 +21,7 @@ principles of Keep a Changelog, and versions use semantic versioning.
   bootstrap governance.
 - Reachable Git history scanning for credential and provenance markers.
 - Verified annotated-tag release artifacts with recorded SHA-256 digests.
-- Automated Pages deployment for reviewed changes on the public default
-  branch.
+- Manual Pages deployment constrained to the reviewed public `main` branch.
 
 ### Security
 
@@ -22,6 +29,10 @@ principles of Keep a Changelog, and versions use semantic versioning.
   credentials.
 - Pin CI runners to Ubuntu 24.04 and validate workflow hardening in repository
   scans.
+- Hash-lock the complete build and coverage toolchain used by CI and releases.
+- Restrict Pages write and OIDC permissions to its deployment job.
+- Validate complete persisted records and audit actor values.
+- Normalize local storage directory and event-file permissions.
 
 ### Fixed
 
@@ -29,6 +40,9 @@ principles of Keep a Changelog, and versions use semantic versioning.
 - Avoid configuring an unused pip cache in dependency-free CI jobs.
 - Install a pinned packaging toolchain before no-isolation package checks.
 - Include build output in failed package-check diagnostics.
+- Reject ambiguous or control-character artifact locators without internal
+  errors.
+- Correct publication metadata status in the adversarial review.
 
 ### Planned
 

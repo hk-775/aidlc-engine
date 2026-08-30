@@ -1,24 +1,26 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools==84.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "aidlc-control-plane"
+name = "aidlc-engine"
 version = "0.1.0"
-description = "A human-governed control plane for agent-assisted software delivery"
+description = "The human-governed automation engine for the AI Development Lifecycle"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
 authors = [
-  {name = "AIDLC Contributors"},
+  {name = "AI-DLC Engine Contributors"},
 ]
 maintainers = [
-  {name = "AIDLC Maintainers"},
+  {name = "AI-DLC Engine Maintainers"},
 ]
 keywords = [
+  "ai-development-lifecycle",
   "ai-governance",
   "audit",
+  "automation",
   "software-delivery",
   "workflow",
 ]
@@ -36,15 +38,15 @@ classifiers = [
 dependencies = []
 
 [project.scripts]
-aidlc = "aidlc.cli:main"
+aidlc-engine = "aidlc_engine.cli:main"
 
 [project.urls]
-Homepage = "https://hk-775.github.io/aidlc/"
-Repository = "https://github.com/hk-775/aidlc"
-Issues = "https://github.com/hk-775/aidlc/issues"
-Documentation = "https://github.com/hk-775/aidlc/tree/main/docs"
-Changelog = "https://github.com/hk-775/aidlc/blob/main/CHANGELOG.md"
-Security = "https://github.com/hk-775/aidlc/security/policy"
+Homepage = "https://hk-775.github.io/aidlc-engine/"
+Repository = "https://github.com/hk-775/aidlc-engine"
+Issues = "https://github.com/hk-775/aidlc-engine/issues"
+Documentation = "https://github.com/hk-775/aidlc-engine/tree/main/docs"
+Changelog = "https://github.com/hk-775/aidlc-engine/blob/main/CHANGELOG.md"
+Security = "https://github.com/hk-775/aidlc-engine/security/policy"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

@@ -26,31 +26,36 @@ class ReleaseArtifactTests(WorkspaceTestCase):
         distribution = self.workspace / "dist"
         distribution.mkdir()
         names = (
-            "aidlc_control_plane-0.1.0-py3-none-any.whl",
-            "aidlc_control_plane-0.1.0.tar.gz",
+            "aidlc_engine-0.1.0-py3-none-any.whl",
+            "aidlc_engine-0.1.0.tar.gz",
         )
         wheel = distribution / names[0]
         with zipfile.ZipFile(wheel, "w") as archive:
             for member in (
-                "aidlc/__init__.py",
-                "aidlc/cli.py",
-                "aidlc/service.py",
-                "aidlc_control_plane-0.1.0.dist-info/licenses/LICENSE",
-                "aidlc_control_plane-0.1.0.dist-info/licenses/NOTICE",
+                "aidlc_engine/__init__.py",
+                "aidlc_engine/cli.py",
+                "aidlc_engine/service.py",
+                "aidlc_engine-0.1.0.dist-info/licenses/LICENSE",
+                "aidlc_engine-0.1.0.dist-info/licenses/NOTICE",
             ):
                 archive.writestr(member, "synthetic\n")
             archive.writestr(
-                "aidlc_control_plane-0.1.0.dist-info/METADATA",
+                "aidlc_engine-0.1.0.dist-info/METADATA",
                 "\n".join(
                     (
                         "License-Expression: Apache-2.0",
                         "License-File: LICENSE",
                         "License-File: NOTICE",
-                        "Project-URL: Repository, https://github.com/hk-775/aidlc",
-                        "Project-URL: Security, https://github.com/hk-775/aidlc/security/policy",
+                        "Project-URL: Repository, https://github.com/hk-775/aidlc-engine",
+                        "Project-URL: Security, https://github.com/hk-775/aidlc-engine/security/policy",
                         "",
                     )
                 ),
+            )
+            archive.writestr(
+                "aidlc_engine-0.1.0.dist-info/entry_points.txt",
+                "[console_scripts]\n"
+                "aidlc-engine = aidlc_engine.cli:main\n",
             )
         source = distribution / names[1]
         with tarfile.open(source, "w:gz") as archive:
@@ -60,6 +65,7 @@ class ReleaseArtifactTests(WorkspaceTestCase):
                 "CODEOWNERS",
                 "README.md",
                 "docs/RELEASE_PROCESS.md",
+                "requirements-build.lock",
                 "schemas/policy.schema.json",
                 "site/index.html",
                 "tests/test_lifecycle.py",
@@ -67,7 +73,7 @@ class ReleaseArtifactTests(WorkspaceTestCase):
                 "tools/release_check.py",
             ):
                 content = b"synthetic\n"
-                info = tarfile.TarInfo(f"aidlc_control_plane-0.1.0/{member}")
+                info = tarfile.TarInfo(f"aidlc_engine-0.1.0/{member}")
                 info.size = len(content)
                 archive.addfile(info, io.BytesIO(content))
 

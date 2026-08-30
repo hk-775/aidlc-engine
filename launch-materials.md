@@ -1,4 +1,4 @@
-# AIDLC launch materials draft
+# AI-DLC Engine launch materials draft
 
 Status: publication-ready draft for the alpha repository. Do not announce or
 change repository visibility until the exact commit has a fresh independent
@@ -7,20 +7,21 @@ publication checklist is complete.
 
 ## One-line description
 
-AIDLC is a human-governed control plane for agent-assisted software delivery.
+The human-governed automation engine for the AI Development Lifecycle.
 
 ## Short description
 
-AIDLC gives agents a bounded workflow for proposing work, submitting evidence,
-and requesting lifecycle transitions while preserving human approval, risk,
-and release authority. The alpha implementation runs locally with no runtime
+AI-DLC Engine automates lifecycle state, evidence requirements, bounded work,
+approval gates, and audit records while preserving human approval, risk, and
+release authority. The alpha implementation runs locally with no runtime
 dependencies and keeps a hash-linked JSON audit trail.
 
 ## Suggested announcement
 
-We are sharing AIDLC 0.1.0 as an open-source evaluation candidate. It explores
-a deliberately narrow question: how can teams gain useful agent assistance
-without treating an agent proposal as delivery authority?
+We are sharing AI-DLC Engine 0.1.0 as an open-source evaluation candidate. It
+explores a deliberately narrow question: how can teams automate the AI
+Development Lifecycle without treating an agent proposal as delivery
+authority?
 
 The repository includes a deterministic lifecycle, configurable evidence,
 agent assignment scope, independent human gates, local integrity checks, a
@@ -63,10 +64,10 @@ operational limitations, and clean-room provenance process.
 
 ## Assets
 
-- Repository: `https://github.com/hk-775/aidlc`
-- Project site: `https://hk-775.github.io/aidlc/`
-- Full logo: `site/assets/aidlc-logo.svg`
-- Icon: `site/assets/aidlc-icon.svg`
+- Repository: `https://github.com/hk-775/aidlc-engine`
+- Project site: `https://hk-775.github.io/aidlc-engine/`
+- Full logo: `site/assets/aidlc-engine-logo.svg`
+- Icon: `site/assets/aidlc-engine-icon.svg`
 - Architecture image: `site/assets/architecture.svg`
 - Architecture source: `site/assets/architecture.dot`
 - Static site: `site/`

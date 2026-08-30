@@ -7,8 +7,14 @@ import hashlib
 import json
 from typing import Any
 
-from aidlc.errors import IntegrityError, ValidationError
-from aidlc.models import HASH_PATTERN, ID_PATTERN, TIMESTAMP_PATTERN, require_exact_keys
+from aidlc_engine.errors import IntegrityError, ValidationError
+from aidlc_engine.models import (
+    HASH_PATTERN,
+    ID_PATTERN,
+    TIMESTAMP_PATTERN,
+    require_exact_keys,
+    validate_actor_record,
+)
 
 GENESIS_HASH = "0" * 64
 
@@ -91,7 +97,11 @@ def validate_event(event: dict[str, Any]) -> None:
     )
     if event["schema_version"] != 1:
         raise ValidationError("unsupported audit event schema version")
-    if not isinstance(event["sequence"], int) or event["sequence"] < 1:
+    if (
+        isinstance(event["sequence"], bool)
+        or not isinstance(event["sequence"], int)
+        or event["sequence"] < 1
+    ):
         raise ValidationError("audit event sequence must be positive")
     if not isinstance(event["event_id"], str) or not ID_PATTERN.fullmatch(
         event["event_id"]
@@ -101,16 +111,23 @@ def validate_event(event: dict[str, Any]) -> None:
         event["timestamp"]
     ):
         raise ValidationError("audit event timestamp is invalid")
-    if not isinstance(event["type"], str) or not event["type"]:
+    if (
+        not isinstance(event["type"], str)
+        or not 1 <= len(event["type"]) <= 100
+        or event["type"] != event["type"].strip()
+        or any(ord(character) < 32 for character in event["type"])
+    ):
         raise ValidationError("audit event type is invalid")
-    if not isinstance(event["actor"], dict):
-        raise ValidationError("audit event actor must be an object")
-    require_exact_keys(event["actor"], {"id", "kind", "roles"}, "audit event actor")
+    validate_actor_record(event["actor"], "audit event actor")
     if not isinstance(event["project_id"], str) or not ID_PATTERN.fullmatch(
         event["project_id"]
     ):
         raise ValidationError("audit event project_id is invalid")
-    if not isinstance(event["state_revision"], int) or event["state_revision"] < 0:
+    if (
+        isinstance(event["state_revision"], bool)
+        or not isinstance(event["state_revision"], int)
+        or event["state_revision"] < 0
+    ):
         raise ValidationError("audit event state_revision is invalid")
     if not isinstance(event["state_digest"], str) or not HASH_PATTERN.fullmatch(
         event["state_digest"]
