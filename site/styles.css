@@ -97,6 +97,11 @@ nav a {
   text-decoration: none;
 }
 
+nav a:hover,
+nav a[aria-current="page"] {
+  color: var(--accent);
+}
+
 .hero {
   padding: clamp(4rem, 8vw, 8rem) 0;
   background:
@@ -162,6 +167,16 @@ h3 {
 
 .button:hover {
   background: var(--accent-dark);
+}
+
+.button.secondary {
+  border: 1px solid var(--accent);
+  background: var(--white);
+  color: var(--accent-dark);
+}
+
+.button.secondary:hover {
+  background: var(--tint);
 }
 
 .hero-actions {
@@ -300,6 +315,256 @@ figcaption {
   color: var(--muted);
 }
 
+.section-copy {
+  max-width: 70ch;
+  color: var(--muted);
+}
+
+.architecture-hero {
+  padding: clamp(4rem, 8vw, 7rem) 0;
+  border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 85% 15%, rgb(244 185 66 / 22%), transparent 24rem),
+    linear-gradient(145deg, #f8fffc 0%, var(--paper) 68%);
+}
+
+.architecture-hero h1 {
+  max-width: 16ch;
+}
+
+.architecture-workbench {
+  margin-top: 2rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+
+.scenario-tabs {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.scenario-button,
+.flow-controls button {
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  background: var(--white);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.scenario-button {
+  padding: 0.65rem 0.9rem;
+}
+
+.scenario-button.active {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--white);
+}
+
+.workbench-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+.workbench-heading h3 {
+  margin: 0;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+}
+
+.workbench-summary {
+  max-width: 68ch;
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.flow-controls {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.4rem;
+}
+
+.flow-controls button {
+  min-height: 2.5rem;
+  padding: 0.55rem 0.75rem;
+}
+
+.flow-controls button:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent-dark);
+}
+
+.flow-controls button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.architecture-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.65rem;
+  padding: 0 1.5rem;
+  margin: 0;
+  list-style: none;
+}
+
+.architecture-step {
+  width: 100%;
+  min-height: 7.5rem;
+  padding: 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: var(--paper);
+  color: var(--muted);
+  text-align: left;
+  cursor: pointer;
+}
+
+.architecture-step span,
+.architecture-step strong,
+.architecture-step small {
+  display: block;
+}
+
+.architecture-step span {
+  width: 1.7rem;
+  height: 1.7rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--line);
+  color: var(--ink);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.architecture-step strong {
+  margin-top: 0.7rem;
+  color: var(--ink);
+}
+
+.architecture-step small {
+  margin-top: 0.3rem;
+}
+
+.architecture-step.complete {
+  border-color: #72b8aa;
+  background: #e4f6f1;
+}
+
+.architecture-step.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.architecture-step.active span {
+  background: var(--accent);
+  color: var(--white);
+}
+
+.step-detail {
+  min-height: 10rem;
+  padding: 1.5rem;
+  margin: 1.5rem;
+  border-left: 0.4rem solid var(--warm);
+  border-radius: 0.4rem;
+  background: #fff8e6;
+}
+
+.step-detail h3 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.step-detail p:last-child {
+  max-width: 72ch;
+  margin-bottom: 0;
+}
+
+.step-position {
+  margin: 0 0 0.45rem;
+  color: #795b18;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.component-grid,
+.boundary-grid,
+.download-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.component-grid article,
+.boundary-grid article {
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+}
+
+.component-grid article {
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+
+.component-grid h3,
+.boundary-grid h3 {
+  margin-top: 0;
+}
+
+.boundary-grid article {
+  border-color: rgb(255 255 255 / 22%);
+  background: rgb(255 255 255 / 7%);
+}
+
+.boundary-grid p {
+  color: #d9e0ed;
+}
+
+.download-grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.download-grid a {
+  min-height: 8rem;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--white);
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow: var(--shadow);
+}
+
+.download-grid a:hover {
+  border-color: var(--accent);
+}
+
+.download-grid strong,
+.download-grid span {
+  display: block;
+}
+
+.download-grid span {
+  margin-top: 0.5rem;
+  color: var(--muted);
+}
+
 footer {
   padding: 2rem 0;
   border-top: 1px solid var(--line);
@@ -352,8 +617,23 @@ footer {
 
   .hero-grid,
   .cards,
-  .demo-grid {
+  .demo-grid,
+  .component-grid,
+  .boundary-grid,
+  .download-grid {
     grid-template-columns: 1fr;
+  }
+
+  .workbench-heading {
+    flex-direction: column;
+  }
+
+  .flow-controls {
+    width: 100%;
+  }
+
+  .flow-controls button {
+    flex: 1;
   }
 
   .stage-list {

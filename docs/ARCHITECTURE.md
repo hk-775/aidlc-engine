@@ -7,6 +7,9 @@ human delivery decisions across the AI Development Lifecycle. The architecture
 favors inspectability and deterministic behavior over distribution,
 integration breadth, or throughput.
 
+Hosted explorer:
+[`https://hk-775.github.io/aidlc-engine/architecture.html`](https://hk-775.github.io/aidlc-engine/architecture.html)
+
 Editable draw.io source:
 [`../site/assets/architecture.drawio`](../site/assets/architecture.drawio)
 

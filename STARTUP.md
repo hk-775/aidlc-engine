@@ -84,8 +84,9 @@ make site
 ```
 
 Use a browser or accessibility tool against the local address printed by
-Python. The page remains useful with scripts disabled, except that the compact
-demo metrics are not populated.
+Python. Review both `/` and `/architecture.html`. Both pages remain useful with
+scripts disabled, except that compact demo metrics and interactive architecture
+steps are not populated.
 
 ## Storage cleanup
 
@@ -99,6 +100,8 @@ record.
 
 - Product intent: [docs/PRD.md](docs/PRD.md)
 - Core design: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- Publication artifacts:
+  [docs/PUBLICATION_ARTIFACTS.md](docs/PUBLICATION_ARTIFACTS.md)
 - Policy model: [docs/CONFIGURATION.md](docs/CONFIGURATION.md)
 - Threat analysis: [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md)
 - Readiness ledger:

@@ -121,5 +121,6 @@ after inspection.
 make site
 ```
 
-The static site reads only repository-local HTML, CSS, JavaScript, and SVG
-files. It does not connect to the live demo store.
+The static site reads only repository-local HTML, CSS, JavaScript, and image
+assets. It does not connect to the live demo store. Open `/` for the landing
+page and `/architecture.html` for the interactive architecture explorer.
