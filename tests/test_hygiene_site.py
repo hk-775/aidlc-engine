@@ -208,15 +208,51 @@ class RepositoryHygieneTests(WorkspaceTestCase):
             pyproject["build-system"]["requires"],
             ["setuptools==84.0.0"],
         )
+        self.assertEqual(
+            pyproject["dependency-groups"]["dev"],
+            [
+                "build==1.3.0",
+                "coverage==7.13.4",
+                "setuptools==84.0.0",
+                "websocket-client>=1.8,<2",
+                "wheel==0.48.0",
+            ],
+        )
+        uv_lock = (ROOT / "uv.lock").read_text(encoding="utf-8")
+        for package_name in (
+            'name = "aidlc-engine"',
+            'name = "build"',
+            'name = "coverage"',
+            'name = "setuptools"',
+            'name = "websocket-client"',
+            'name = "wheel"',
+        ):
+            self.assertIn(package_name, uv_lock)
 
     def test_uv_is_the_primary_installation_path(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         quickstart = (ROOT / "QUICKSTART.md").read_text(encoding="utf-8")
         contributing = (ROOT / "CONTRIBUTING.md").read_text(encoding="utf-8")
+        startup = (ROOT / "STARTUP.md").read_text(encoding="utf-8")
         self.assertIn("uv tool install .", readme)
         self.assertIn("uv tool install .", quickstart)
-        self.assertIn("uv pip install --require-hashes", contributing)
+        self.assertIn("uv sync --locked --all-groups", contributing)
+        self.assertIn("uv sync --locked --all-groups", startup)
+        for document in (readme, quickstart, contributing, startup):
+            self.assertNotIn("uv pip install", document)
         self.assertNotIn("PYTHONPATH=src python3 -m aidlc_engine", quickstart)
+
+    def test_development_dependency_notice_is_current(self) -> None:
+        notices = (ROOT / "THIRD_PARTY_NOTICES.md").read_text(encoding="utf-8")
+        for marker in (
+            "| build | 1.3.0 | MIT |",
+            "| coverage | 7.13.4 | Apache-2.0 |",
+            "| setuptools | 84.0.0 | MIT |",
+            "| websocket-client | 1.9.2 | Apache-2.0 |",
+            "| wheel | 0.48.0 | MIT |",
+            "package code is not bundled",
+        ):
+            self.assertIn(marker, notices)
 
     def test_publication_inventory_covers_customer_facing_artifacts(self) -> None:
         inventory = (ROOT / "docs" / "PUBLICATION_ARTIFACTS.md").read_text(
@@ -231,6 +267,8 @@ class RepositoryHygieneTests(WorkspaceTestCase):
             "docs/ARCHITECTURE.md",
             "docs/PRODUCTION_READINESS.md",
             "launch-materials.md",
+            "tools/browser_check.py",
+            "uv.lock",
         ):
             with self.subTest(path=path):
                 self.assertIn(path, inventory)
@@ -250,6 +288,20 @@ class RepositoryHygieneTests(WorkspaceTestCase):
         self.assertIn("ref: refs/heads/main", jobs_block)
         self.assertIn("pages: write", jobs_block)
         self.assertIn("id-token: write", jobs_block)
+        self.assertIn("astral-sh/setup-uv@", jobs_block)
+        self.assertIn("uv sync --locked --all-groups", jobs_block)
+        self.assertIn("make browser-check", jobs_block)
+
+    def test_ci_and_release_use_the_locked_uv_environment(self) -> None:
+        for relative_path in (
+            ".github/workflows/ci.yml",
+            ".github/workflows/release.yml",
+        ):
+            with self.subTest(path=relative_path):
+                text = (ROOT / relative_path).read_text(encoding="utf-8")
+                self.assertIn("astral-sh/setup-uv@", text)
+                self.assertIn("uv sync --locked --all-groups", text)
+                self.assertNotIn("pip install", text)
 
 
 class StaticSiteTests(WorkspaceTestCase):

@@ -12,6 +12,8 @@ principles of Keep a Changelog, and versions use semantic versioning.
   repository metadata.
 - Make `uv tool install` the primary installation path and use the installed
   `aidlc-engine` command throughout evaluator and operator documentation.
+- Make `uv.lock` the canonical development and publication lock, with CI,
+  Pages, release, and local checks using `uv sync --locked`.
 - Use `.aidlc-engine` as the default local store while retaining the v1
   `.aidlc.lock` and `.aidlc.pending.json` filenames for store compatibility.
 
@@ -31,6 +33,9 @@ principles of Keep a Changelog, and versions use semantic versioning.
   persistence walkthroughs plus direct downloads of canonical diagram assets.
 - Maintained publication-artifact inventory covering customer-facing pages,
   documentation, visual sources, and release inclusion.
+- Real-Chrome publication validation for the exact Pages base path,
+  architecture interactions and downloads, network isolation, and mobile
+  overflow.
 
 ### Security
 
@@ -39,6 +44,7 @@ principles of Keep a Changelog, and versions use semantic versioning.
 - Pin CI runners to Ubuntu 24.04 and validate workflow hardening in repository
   scans.
 - Hash-lock the complete build and coverage toolchain used by CI and releases.
+- Enforce a 90% minimum branch-coverage report.
 - Restrict Pages write and OIDC permissions to its deployment job.
 - Validate complete persisted records and audit actor values.
 - Normalize local storage directory and event-file permissions.

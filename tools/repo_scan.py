@@ -120,8 +120,10 @@ REQUIRED_FILES = {
     "site/assets/aws-reference-architecture.png",
     "site/index.html",
     "site/styles.css",
+    "tools/browser_check.py",
     "tools/history_scan.py",
     "tools/release_check.py",
+    "uv.lock",
 }
 
 EXPECTED_PROJECT_URLS = {
@@ -622,6 +624,7 @@ def scan_packaging(root: Path = ROOT) -> list[Finding]:
             "demo-data/",
             "!requirements-build.lock",
             "!requirements.lock",
+            "!uv.lock",
         ):
             if pattern not in ignore_text:
                 findings.append(

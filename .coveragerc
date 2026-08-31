@@ -5,6 +5,7 @@ source = aidlc_engine
 [report]
 exclude_also =
     if __name__ == .__main__.:
+fail_under = 90
 show_missing = True
 skip_covered = False
 precision = 2

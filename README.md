@@ -115,12 +115,13 @@ artifacts, five assignments, and five transition proposals.
 Run the complete local checks from the cloned repository:
 
 ```console
-make test
-make scan
-make history-scan
-make demo
-make package-check
+make sync
+make check
 ```
+
+The locked check covers branch coverage, repository and reachable-history
+scans, the deterministic demo, the exact Pages routes in Chrome, and temporary
+source/wheel inspection.
 
 To inspect the static site locally:
 
