@@ -18,10 +18,9 @@ commitment, response guarantee, or production service.
 Before asking, run:
 
 ```console
-python3 --version
-make test
-make scan
-PYTHONPATH=src python3 tools/demo_check.py
+uv --version
+make sync
+make check
 ```
 
 Include the operating system, Python version, command, machine-readable error,

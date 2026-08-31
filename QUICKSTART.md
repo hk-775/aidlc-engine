@@ -106,14 +106,13 @@ assignment, artifact, and proposal identifiers from each JSON result.
 ## 8. Run repository checks
 
 ```console
-make test
-make coverage
-make scan
-make package-check
+make sync
+make check
 ```
 
-Package archives are created only in ignored temporary storage and removed
-after inspection.
+The locked check includes coverage, source and history scans, the deterministic
+demo, real-browser validation of the Pages routes, and temporary package
+inspection. Package archives are removed after inspection.
 
 ## 9. View the offline project site
 

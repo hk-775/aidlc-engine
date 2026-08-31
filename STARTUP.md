@@ -28,21 +28,26 @@ aidlc-engine --help
 From the repository root:
 
 ```console
+uv sync --locked --all-groups --python 3.12
 make check
-make coverage
 ```
 
-`make check` runs the test suite, nine repository scans, the complete
-deterministic demo, and a temporary source/wheel build inspection. A successful
-demo reaches the terminal lifecycle stage with a valid 32-event audit chain.
+`make check` runs branch coverage, nine repository scans, reachable-history
+scanning, the complete deterministic demo, real-browser validation beneath the
+exact Pages base path, and a temporary source/wheel build inspection. A
+successful demo reaches the terminal lifecycle stage with a valid 32-event
+audit chain.
 
 If Make is unavailable, run:
 
 ```console
-PYTHONPATH=src python3 -m unittest discover -s tests -v
-PYTHONPATH=src python3 tools/repo_scan.py --pretty
-PYTHONPATH=src python3 tools/demo_check.py
-PYTHONPATH=src python3 tools/package_check.py
+uv run --locked --all-groups coverage run --branch -m unittest discover -s tests
+uv run --locked --all-groups coverage report
+uv run --locked --all-groups python tools/repo_scan.py --pretty
+uv run --locked --all-groups python tools/history_scan.py --pretty
+uv run --locked --all-groups python tools/demo_check.py
+uv run --locked --all-groups python tools/browser_check.py
+uv run --locked --all-groups python tools/package_check.py
 ```
 
 ## Manual smoke test

@@ -23,6 +23,7 @@ source and validated without private services or production credentials.
 | Readiness ledger | Implemented evidence, production gaps, and blocking risks | `docs/PRODUCTION_READINESS.md` |
 | Security material | Reporting policy, threat model, adversarial review, and responsible use | `SECURITY.md`, `docs/THREAT_MODEL.md`, `docs/ADVERSARIAL_REVIEW.md`, `docs/RESPONSIBLE_USE.md` |
 | Launch copy | Supportable claims, claims to avoid, demo script, and asset locations | `launch-materials.md` |
+| Browser evidence | Exact Pages-base, interaction, asset, network-isolation, and mobile checks in Chrome | `tools/browser_check.py` |
 | Release evidence | Verified source and wheel archives with recorded SHA-256 digests | `.github/workflows/release.yml`, `tools/release_check.py` |
 
 ## Visual source of truth
@@ -54,7 +55,7 @@ The source distribution must contain:
 - both site JavaScript files and the shared stylesheet;
 - both editable draw.io sources and both PNG renders;
 - this publication inventory and the long-form architecture reference; and
-- the release verification tooling.
+- the locked development environment and browser/release verification tooling.
 
 `tools/package_check.py` and `tools/release_check.py` enforce those members.
 
@@ -63,21 +64,20 @@ The source distribution must contain:
 Before publication or announcement, run:
 
 ```console
-make test
-make coverage
-make scan
-make history-scan
-make demo
-make package-check
+make sync
+make check
 ```
 
-Then verify both pages locally:
+The Chrome check serves the site beneath `/aidlc-engine/`, exercises both
+pages and their controls, verifies all six architecture downloads, confirms
+the current and AWS reference images load, and rejects external requests,
+API calls, WebSockets, browser exceptions, failed loads, and mobile overflow.
+For transient visual-review captures, run:
 
 ```console
-make site
+uv run --locked --all-groups python tools/browser_check.py \
+  --screenshot-dir /tmp/aidlc-engine-browser
 ```
-
-Open `/` and `/architecture.html` from the printed local address.
 
 ## Intentional omissions
 
@@ -87,6 +87,7 @@ artifacts. The implementation is a local evaluation engine with no remote API
 or external delivery integration, so publishing those artifacts would imply a
 deployment surface that does not exist.
 
-Runtime dependencies are empty. The build and coverage toolchain remains
-exactly versioned and hash-locked in `requirements-build.lock`; it is not
-duplicated as an application dependency lock.
+Runtime dependencies are empty. `uv.lock` is the canonical reproducible
+development environment, including browser validation. The build and coverage
+subset remains independently versioned and hash-pinned in
+`requirements-build.lock` for auditability.

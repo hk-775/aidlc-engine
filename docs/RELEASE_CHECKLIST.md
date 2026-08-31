@@ -38,7 +38,8 @@ production ready.
 - [ ] Credential scan passes.
 - [ ] Reachable Git history scan passes.
 - [ ] Workflow actions are pinned to full commit identifiers.
-- [ ] Build and coverage tools install from the reviewed hash lock.
+- [ ] The complete development environment installs from the reviewed
+      `uv.lock` with `uv sync --locked`.
 - [ ] gitleaks runs successfully, or unavailability is disclosed.
 - [ ] Synthetic demo reaches expected counts and valid audit state.
 - [ ] Package source and wheel build in temporary storage.
@@ -53,6 +54,8 @@ production ready.
 - [ ] No unresolved high-severity vulnerability is known.
 - [ ] Local runbook recovery steps were exercised.
 - [ ] Static-site content policy and external-asset scan pass.
+- [ ] The exact Pages routes pass the Chrome check with no external requests,
+      API calls, WebSockets, browser exceptions, or mobile overflow.
 - [ ] Manual keyboard and basic screen-reader review is complete.
 
 ## Branding and publication

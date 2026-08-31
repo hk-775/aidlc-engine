@@ -19,6 +19,8 @@ project or organization identity.
 - [ ] Replace or deliberately retain the logo and icon under the license.
 - [ ] Update SVG titles, descriptions, filenames, and accessible alt text.
 - [ ] Update architecture explorer copy, canonical URLs, and downloadable assets.
+- [ ] Review the separate AWS services reference architecture, preserving
+      current/target labels and removing environment-specific identifiers.
 - [ ] Update colors only after checking contrast and focus visibility.
 
 ## Product truthfulness
@@ -59,11 +61,15 @@ project or organization identity.
 
 ## Publication
 
-- [ ] Run tests, coverage, scans, demo, and package inspection.
+- [ ] Install from `uv.lock` with `uv sync --locked`.
+- [ ] Run the complete `make check` publication gate.
 - [ ] Run the full release checklist.
 - [ ] Review static-site links, content policy, accessibility, and metadata.
 - [ ] Review both the landing page and architecture explorer with scripts on
       and off.
+- [ ] Run the real-browser check beneath the final Pages base and inspect
+      transient desktop and mobile screenshots.
+- [ ] Verify both logical and AWS reference draw.io/PNG downloads.
 - [ ] Keep Pages deployment manual, constrained to `main`, and protected by
       environment reviewers.
 - [ ] Remove local state, temporary output, coverage data, and archives.

@@ -22,25 +22,17 @@ Do not submit:
 ## Development setup
 
 Python 3.11 or newer is required. Runtime dependencies are intentionally empty.
-Create a local environment and install the reviewed automation tools with `uv`
-and hash verification:
+Install the project and reviewed automation tools from the canonical lock:
 
 ```console
-uv venv
-uv pip install --require-hashes -r requirements-build.lock
-uv tool install --editable .
+uv sync --locked --all-groups --python 3.12
 ```
 
 ```console
-make test
-make coverage
-make scan
-make history-scan
-make demo
-make package-check
+make check
 ```
 
-Use `PYTHONPATH=src` when running modules directly.
+Use `uv run --locked --all-groups` when running a command directly.
 
 ## Design expectations
 

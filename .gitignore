@@ -32,6 +32,7 @@ local-data/
 *.lock
 !requirements-build.lock
 !requirements.lock
+!uv.lock
 *.pending.json
 
 # Editors and operating systems

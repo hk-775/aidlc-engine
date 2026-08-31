@@ -12,10 +12,10 @@ PyPI or another package index.
 3. Confirm `CHANGELOG.md` describes the release and its limitations.
 4. Obtain the governance and independent security reviews required by
    [GOVERNANCE.md](../GOVERNANCE.md).
-5. Run `make check`, `make coverage`, and `make history-scan` from a clean
-   checkout.
-6. Confirm CI and release workflows install `requirements-build.lock` with
-   pip hash enforcement.
+5. Run `uv sync --locked --all-groups --python 3.12` and `make check` from a
+   clean checkout.
+6. Confirm CI, Pages, and release workflows use the reviewed `uv.lock` with
+   `uv sync --locked`.
 
 ## Create the tag
 
@@ -44,15 +44,19 @@ history, then:
 
 1. verifies that the annotated tag, package version, and checked-out commit
    agree;
-2. installs the exact hash-locked build and coverage toolchain;
-3. runs tests, repository scans, coverage, the synthetic demo, package
-   inspection, and reachable-history scanning;
+2. installs the exact `uv`-locked development environment;
+3. runs tests, repository scans, coverage, reachable-history scanning, the
+   synthetic demo, Chrome validation, and package inspection;
 4. builds one source archive and one universal wheel;
 5. verifies the exact archive names and records SHA-256 digests; and
 6. uploads the archives as a retained GitHub Actions artifact.
 
 The workflow has read-only repository permission. It does not create a GitHub
 Release, publish a package, sign an archive, or deploy software.
+
+`uv.lock` is the canonical executable environment lock.
+`requirements-build.lock` remains a supplemental, independently hash-pinned
+inventory of the build and coverage toolchain.
 
 ## Publish deliberately
 

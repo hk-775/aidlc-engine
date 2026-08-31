@@ -86,5 +86,6 @@ operational limitations, and clean-room provenance process.
 - Enable and test GitHub private vulnerability reporting.
 - Confirm repository ownership, branch rules, topics, and Pages settings.
 - Confirm license and notice text with project counsel.
-- Run all tests, scans, coverage, package checks, and the release checklist.
+- Run the locked full check, including Chrome, history, package, and coverage
+  validation, plus the release checklist.
 - Review screenshots and announcement copy for current behavior.
